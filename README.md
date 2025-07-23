@@ -1,2 +1,3 @@
-# LaTeX-Document-Template
-📜 LaTeX Template for Notes, Reports and Proposals.
+<div align=center>
+  <h1>LaTeX Document Template</h1>
+</div>
