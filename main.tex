@@ -1,44 +1,43 @@
-\documentclass[twoside, 11pt]{report}
+%% Change the argument to 'report', 'article' or 'book' as needed
+\documentclass[twoside, 11pt]{article} 
+
+%% Load the document style package
 \usepackage{document}
 
+%% Load the bibliography file
 \addbibresource{reference.bib}
 
-%% All the figure files inside the figures folder
+%% Set the path for figures
 \graphicspath{{figures/}}
 
-
-\author{Author Name}
+%% Set the document metadata
 \title{Document Title}
+\author{Author Name}
+\date{\today}
 
-
+%% Begin the document
 \begin{document}
 
-\maketitle
+  \maketitle
 
-\begin{abstract}
-	
-\end{abstract}
+  %% Include the abstract
+  \input{abstract}
 
-\newpage
+  %% Include the table of contents
+  \setcounter{tocdepth}{2}
+  \tableofcontents
 
-\tableofcontents
+  \newpage
 
-\newpage
+  This project is hosted on GitHub and serves as a template for creating {\LaTeX} documents. 
+  For more details, refer to the GitHub repository from~\cite{chang2025document}.
 
-This project is hosted on GitHub and serves as a template for creating LaTeX documents. 
-For more details, refer to the repository from~\cite{chang2025document}.
-
-%─────Appendix────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-\appendix
-% \appendixpage{}
-
-
-% \input{appendix.tex}
-
-\newpage
-%─────Reference──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-\pagestyle{plain}
-\printbibliography{}
-
+  %% Include the appendix
+  \input{appendix}
+  \newpage
+  
+  %% Include the bibliography
+  \pagestyle{plain}
+  \printbibliography{}
 
 \end{document}
