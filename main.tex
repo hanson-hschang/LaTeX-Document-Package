@@ -1,0 +1,44 @@
+\documentclass[twoside, 11pt]{report}
+\usepackage{document}
+
+\addbibresource{reference.bib}
+
+%% All the figure files inside the figures folder
+\graphicspath{{figures/}}
+
+
+\author{Author Name}
+\title{Document Title}
+
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+	
+\end{abstract}
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+This project is hosted on GitHub and serves as a template for creating LaTeX documents. 
+For more details, refer to the repository from~\cite{chang2025document}.
+
+%─────Appendix────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+\appendix
+% \appendixpage{}
+
+
+% \input{appendix.tex}
+
+\newpage
+%─────Reference──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+\pagestyle{plain}
+\printbibliography{}
+
+
+\end{document}
