@@ -1,13 +1,29 @@
 \ProvidesPackage{document}[2025/07/23 Document Package]
 
-% Load other packages that this package depends on
-\RequirePackage{amsmath, amsfonts, amsthm, amssymb, mathtools, mathrsfs, mathdots}
-\RequirePackage[backend=biber, style=apa]{biblatex}
-\RequirePackage{graphicx}
-\RequirePackage[dvipsnames]{xcolor}
+%% Load the kvoptions package for key-value options
+\RequirePackage{kvoptions}
+\SetupKeyvalOptions{
+    family=document,
+    prefix=document@
+}
+\DeclareStringOption[docs]{content}
+\ProcessKeyvalOptions*
+
+%% Load the geometry package for page layout
 \RequirePackage[margin=1in]{geometry}
+
+%% Load the bibliography package
+\RequirePackage[backend=biber, style=apa]{biblatex}
+
+%% Load the appendix package
 \RequirePackage{appendix}
 
+\RequirePackage{amsmath, amsfonts, amsthm, amssymb, mathtools, mathrsfs, mathdots}
+\RequirePackage{graphicx}
+\RequirePackage[dvipsnames]{xcolor}
+
+%% Load the content tex file from the specified directory
+\newcommand{\addcontent}[1]{\input{\document@content/#1}}
 
 % \usepackage{tikz}
 % \usepackage{MnSymbol}
