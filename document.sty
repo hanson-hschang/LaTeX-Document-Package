@@ -1,29 +1,61 @@
-%% Define the document style package
+%% document.sty requires LaTeX2e format
+\NeedsTeXFormat{LaTeX2e}
+
+%% Define the style package name as 'document'
 \ProvidesPackage{document}[2025/07/23 Document Package]
 
 %% Load the kvoptions package for key-value options
-\RequirePackage{kvoptions}
-\SetupKeyvalOptions{
-  family=document,
-  prefix=document@
-}
-\DeclareStringOption[docs]{content}
-\ProcessKeyvalOptions*
+% \RequirePackage{kvoptions}
+% \SetupKeyvalOptions{
+%   family=document,
+%   prefix=document@
+% }
+% \ProcessKeyvalOptions*
 
-%% Load the content tex file from the specified directory
-\newcommand{\addcontent}[1]{\input{\document@content/#1}}
+%%----------------------------------------------------------------------------------------
+%%   CONTENT DIRECTORY MANAGEMENT
+%%----------------------------------------------------------------------------------------
+
+%% Set the default content directory
+\newcommand{\document@directory}{.} 
+
+%% Update the content directory
+\newcommand{\setdirectory}[1]{
+  \renewcommand{\document@directory}{#1}
+}
+
+%% Update the content directory for appendices
+\newcommand{\setappendix}[1]{
+  \renewcommand{\document@directory}{#1}
+  \appendix
+  \appendixpage{}
+}
+
+%% Load the content .tex file from the specified directory
+\newcommand{\addcontent}[1]{\input{\document@directory/#1}}
+
+%%----------------------------------------------------------------------------------------
+%%   DOCUMENT STYLE SETUP
+%%----------------------------------------------------------------------------------------
 
 %% Load the geometry package for page layout
 \RequirePackage[margin=1in]{geometry}
 
-% Load the fancy headers
+%% Load the fancy headers
 \RequirePackage{fancyhdr}
-\pagestyle{fancy}
-\fancyhead[L]{}
-% \fancyhead[R]{\@lecture}
-\fancyfoot[L]{}
-\fancyfoot[R]{\thepage}
-\fancyfoot[C]{\leftmark}
+\pagestyle{fancy} %% Set the page style to fancy
+\fancyhf{} %% Clear existing header and footer
+\fancyhead[R]{\leftmark}
+\fancyfoot[C]{\thepage}
+\setlength{\headheight}{0.5in}
+
+%%----------------------------------------------------------------------------------------
+%%   PACKAGE LOADING
+%%----------------------------------------------------------------------------------------
+
+%% Load the encoding package for UTF-8 support
+%% (This should be loaded before any other packages that use characters, e.g. biblatex)
+\RequirePackage[utf8]{inputenc}
 
 %% Load the bibliography package
 \RequirePackage[backend=biber, style=apa]{biblatex}
@@ -31,13 +63,15 @@
 %% Load the appendix package
 \RequirePackage{appendix}
 
-\RequirePackage{amsmath, amsfonts, amsthm, amssymb, mathtools, mathrsfs, mathdots}
-\RequirePackage{graphicx}
-
-%% Load the xcolor package for color support with 
-%% the dvipsnames option providing a wide range of predefined colors
+%% Load the xcolor package for color support with the
+%% dvipsnames option providing a wide range of predefined colors
 \RequirePackage[dvipsnames]{xcolor}
 
+%% Load math packages for mathematical typesetting
+\RequirePackage{amsmath, amsfonts, amsthm, amssymb, mathtools, mathrsfs, mathdots}
+
+%% Load the graphicx package for including graphics
+\RequirePackage{graphicx}
 
 % \usepackage{tikz}
 % \usepackage{MnSymbol}
@@ -60,7 +94,9 @@
 %     allcolors=.
 % ]{hyperref}
 % \usepackage{multimedia}
-% \usepackage{booktabs}
+
+%% Load the booktabs package for better table formatting
+\RequirePackage{booktabs}
 
 
 % %\usepackage{algorithm2e}
@@ -73,9 +109,9 @@
 
 % \usepackage{pbox}
 
-%----------------------------------------------------------------------------------------
-%   THEOREM-LIKE ENVIRONMENTS
-%----------------------------------------------------------------------------------------
+%%----------------------------------------------------------------------------------------
+%%   THEOREM-LIKE ENVIRONMENTS
+%%----------------------------------------------------------------------------------------
 
 %% Provides advanced control over theorem-like environments
 \RequirePackage{thmtools}
@@ -212,10 +248,10 @@
 
 %% Proof environment
 \renewenvironment{proof}[1][\proofname]{
+  \vspace{-11pt}
   \par
   \pushQED{\null\hfill\(\blacksquare\)}
-	\normalfont 
-  \topsep-3\p@\@plus6\p@\relax
+	\normalfont
 	\trivlist
 	\item[
     \hskip\labelsep
