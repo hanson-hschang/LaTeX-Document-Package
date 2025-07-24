@@ -1,8 +1,9 @@
 %% Change the argument to 'report', 'article' or 'book' as needed
 \documentclass[twoside, 11pt]{article} 
 
-%% Load the document style package
-\usepackage{document}
+%% Load the document style package with option: 
+%% import the content from the directory 'docs'
+\usepackage[content=docs]{document}
 
 %% Load the bibliography file
 \addbibresource{reference.bib}
@@ -31,6 +32,9 @@
 
   This project is hosted on GitHub and serves as a template for creating {\LaTeX} documents. 
   For more details, refer to the GitHub repository from~\cite{chang2025document}.
+
+  \addcontent{1_theorem}
+  
 
   %% Include the appendix
   \input{appendix}
