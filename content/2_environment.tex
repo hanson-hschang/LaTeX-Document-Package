@@ -1,6 +1,6 @@
 \section{Environment}
 
-An environment in {\LaTeX} is a section of the document that is formatted in a specific way. 
+An \emph{environment} in {\LaTeX} is a section of the document that is formatted in a specific way. 
 This document demonstrates various environments, including the use of scripts, tables, figures, algorithms, and framed environments.
 The basic usage of an environment is shown below.
 
@@ -20,13 +20,13 @@ Here are some common environments used in {\LaTeX} including \texttt{enumerate},
     \item Second item in the same list.
     \item Third item and more ...
   \end{enumerate}
-  \begin{minted}{latex}
+  \begin{latexcode}
 \begin{enumerate}
   \item First item in an enumerated list.
   \item Second item in the same list.
   \item Third item and more ...
 \end{enumerate}
-  \end{minted}
+  \end{latexcode}
 \end{multicols}
 
 \noindent\rule{\linewidth}{0.4pt}
@@ -37,36 +37,52 @@ Here are some common environments used in {\LaTeX} including \texttt{enumerate},
     \item Second item in the same list.
     \item Third item and more ...
   \end{itemize}
-  \begin{minted}{latex}
+  \begin{latexcode}
 \begin{itemize}
   \item First item in an unordered list.
   \item Second item in the same list.
   \item Third item and more ...
 \end{itemize}
-  \end{minted}
+  \end{latexcode}
 \end{multicols}
 
 \noindent\rule{\linewidth}{0.4pt}
 
 \begin{multicols}{2}
   \begin{displayquote}
-    This is a quote, which uses the csquotes 
-    package with customization set in the 
-    document.sty file.
+    This is a quote, which uses the \texttt{csquotes} package with customization set inside the \texttt{document.sty} file.
   \end{displayquote}
-  \columnbreak
-  \begin{minted}{latex}
+  \columnbreak{}
+  \begin{latexcode}
 \begin{displayquote}
-  This is a quote, which uses the csquotes 
-  package with customization set in the 
-  document.sty file.
+  This is a quote, which uses the \texttt{csquotes} package with customization set inside the \texttt{document.sty} file.
 \end{displayquote}
-  \end{minted}
+  \end{latexcode}
 \end{multicols}
 
 \noindent\rule{\linewidth}{0.4pt}
 
 \subsection{Scripts}
+
+To include scripts in your document, the \texttt{minted} package is used.
+Here is an example of a \texttt{python} script:
+
+\begin{multicols}{2}
+  \begin{minted}{python}
+
+def hello_world():
+    print("Hello, World!")
+hello_world()
+  \end{minted}
+  \columnbreak{}
+  \begin{latexcode}
+\begin{minted}{python}
+def hello_world():
+    print("Hello, World!")
+hello_world()
+\end{minted}
+  \end{latexcode}
+\end{multicols}
 
 \subsection{Tables}
 Use the package \texttt{booktabs} for better table formatting.

@@ -103,6 +103,8 @@
 
 %% Load the minted package for syntax highlighting in code listings
 \RequirePackage{minted}
+%% Define 'latexcode' environment as a wrapper for 'minted' with LaTeX syntax highlighting
+\newminted{latex}{breaklines, breakanywhere}
 
 %% Load the booktabs package for better table formatting
 \RequirePackage{booktabs}
