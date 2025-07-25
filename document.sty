@@ -12,6 +12,9 @@
 % }
 % \ProcessKeyvalOptions*
 
+%% Load the xparse package for advanced command definitions
+% \RequirePackage{xparse}
+
 %%----------------------------------------------------------------------------------------
 %%   CONTENT DIRECTORY MANAGEMENT
 %%----------------------------------------------------------------------------------------
@@ -52,18 +55,26 @@
 \fancyfoot[C]{\thepage}
 \setlength{\headheight}{0.5in}
 
+%% Load the empty page package to avoid headers on empty pages
+\RequirePackage{emptypage}
+
 %%----------------------------------------------------------------------------------------
 %%   PACKAGE LOADING
 %%----------------------------------------------------------------------------------------
 
 %% Load the encoding package for UTF-8 support
-%% (This should be loaded before any other packages that use characters, e.g. biblatex)
+%% (This should be loaded before any other packages that use characters, e.g. fontenc, biblatex)
 \RequirePackage[utf8]{inputenc}
+
+%% Load the font encoding package for better font support
+\RequirePackage[T1]{fontenc}
+
+%% Load the textcomp package for additional text symbols
+\RequirePackage{textcomp}
 
 %% Load the bibliography package
 \RequirePackage[backend=biber, style=apa]{biblatex}
-
-% Change parentheses to square brackets for parenthetical citations like \autocite
+%% Change parentheses to square brackets for parenthetical citations like \autocite
 \renewcommand*{\mkbibparens}[1]{\bibopenbracket#1\bibclosebracket}
 
 %% Load the appendix package
@@ -76,8 +87,39 @@
 %% Load math packages for mathematical typesetting
 \RequirePackage{amsmath, amsfonts, amsthm, amssymb, mathtools, mathrsfs, mathdots}
 
+%% Load the nicefrac package for typesetting fractions
+\RequirePackage{nicefrac}
+
+%% Load the cancel package for striking out text in math mode
+\RequirePackage{cancel}
+
+%% Load the Mathematical Nature Symbols package for additional math symbols
+\RequirePackage{MnSymbol}
+
+%% Load the Double-Struck Font package for double-struck symbols \mathds{...}
+\RequirePackage{dsfont}
+
+%% Load the Upgreek package for upright Greek letters
+\RequirePackage{upgreek}
+
+%% Load the systeme package for typesetting systems of linear (and non-linear) equations.
+\RequirePackage{systeme}
+
+%% Load the siunitx package for SI units and numbers
+%% Use the locale option to set the number formatting according to the specified location.
+\RequirePackage[locale=US]{siunitx}
+
 %% Load the graphicx package for including graphics
 \RequirePackage{graphicx}
+
+%% Load the TikZ package for creating graphics
+\RequirePackage{tikz}
+\usetikzlibrary{intersections, angles, quotes, positioning}
+\usetikzlibrary{arrows.meta}
+
+%% Load the pgfplots package for creating plots
+\RequirePackage{pgfplots}
+\pgfplotsset{compat=1.13}
 
 %% Load the multirow and multicol packages for advanced row and column formatting
 \RequirePackage{multirow}
@@ -87,28 +129,22 @@
 \RequirePackage{csquotes} 
 \renewcommand{\mkbegdispquote}[2]{\itshape}
 
-% \usepackage{tikz}
-% \usepackage{MnSymbol}
-% \usepackage{dsfont}
-% \usepackage{upgreek}
-% \usepackage{xparse}
-% \usepackage{nameref}
-
-% \usepackage{float}
-% \usepackage{nicefrac}
-% \usepackage{arydshln}
-% \usepackage{soul}
-% \usepackage{indentfirst}
-% \usepackage{multimedia}
-
 %% Load the hyperref package for hyperlinks
 \RequirePackage[
   colorlinks=true,
   allcolors=.
 ]{hyperref}
 
+%% Load the soul package for text highlighting
+% \RequirePackage{soulutf8} %% Use this for UTF-8 support with highlighting
+\RequirePackage{soul}
+\newcommand{\spaceout}{\so}
+
 %% Load the fancyvrb package for fancy verbatim text handling
 \RequirePackage{fancyvrb}
+
+%% Load the enumitem package for advanced list formatting
+\RequirePackage{enumitem}
 
 %% Load the minted package for syntax highlighting in code listings
 \RequirePackage{minted}
@@ -128,18 +164,29 @@
 %% Load the booktabs package for better table formatting
 \RequirePackage{booktabs}
 
+%% Load the array dashed line package for advanced array and tabular features
+\RequirePackage{arydshln}
+
 %% Load the caption and subcaption packages for figure and table captions
 \RequirePackage{caption}
 \RequirePackage{subcaption}
 \captionsetup{labelfont = bf, labelsep = period, font = {footnotesize, sf}}
 
+%% Load the multimedia package for embedding movie and sound files
+\RequirePackage{multimedia}
+
 %% Load the pbox package for paragraph boxes
-% \RequirePackage{pbox}
+\RequirePackage{pbox}
 
 %% Load the algorithm and algpseudocode packages for algorithm formatting
 \RequirePackage{algorithm}
 \RequirePackage{algpseudocode}
 
+%% Load the float package for controlling float placement
+\RequirePackage{float}
+
+%% Load the nameref package for referencing names
+\RequirePackage{nameref}
 
 %%----------------------------------------------------------------------------------------
 %%   THEOREM-LIKE ENVIRONMENTS
@@ -147,15 +194,13 @@
 
 %% Provides advanced control over theorem-like environments
 \RequirePackage{thmtools}
+%% Set the default theorem style
+\theoremstyle{definition}
 
 %% For creating framed boxes around environments
 \RequirePackage[framemethod=TikZ]{mdframed}
-
 %% General setup for framed environments
 \mdfsetup{skipabove=1em, skipbelow=0em}
-
-%% Set the default theorem style
-\theoremstyle{definition}
 
 %% --- Custom Box Styles ---
 
