@@ -90,9 +90,7 @@
 % \usepackage{upgreek}
 % \usepackage{xparse}
 % \usepackage{nameref}
-% \usepackage{caption}
-% \usepackage{subcaption}
-% \captionsetup{labelfont = bf, labelsep = period, font = {footnotesize, sf}}
+
 % \usepackage{float}
 % \usepackage{nicefrac}
 % \usepackage{arydshln}
@@ -112,10 +110,25 @@
 %% Load the minted package for syntax highlighting in code listings
 \RequirePackage{minted}
 %% Define 'latexcode' environment as a wrapper for 'minted' with LaTeX syntax highlighting
-\newminted{latex}{breaklines, breakanywhere}
+\newminted{latex}{
+  breaklines, 
+  breakanywhere, 
+  fontsize=\footnotesize, 
+  linenos=true, 
+  numbersep=5pt, 
+  frame=lines, 
+  framesep=2mm, 
+  tabsize=2, 
+  autogobble=true
+}
 
 %% Load the booktabs package for better table formatting
 \RequirePackage{booktabs}
+
+%% Load the caption and subcaption packages for figure and table captions
+\RequirePackage{caption}
+\RequirePackage{subcaption}
+\captionsetup{labelfont = bf, labelsep = period, font = {footnotesize, sf}}
 
 %% Load the pbox package for paragraph boxes
 % \RequirePackage{pbox}
@@ -126,6 +139,9 @@
 % \renewcommand{\algorithmicrequire}{\textbf{Input:}}
 % \renewcommand{\algorithmicensure}{\textbf{Output:}}
 % \algrenewcommand\alglinenumber[1]{#1:}
+
+\RequirePackage{algorithm}
+\RequirePackage{algpseudocode}
 
 
 %%----------------------------------------------------------------------------------------
