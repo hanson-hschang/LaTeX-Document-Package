@@ -4,15 +4,15 @@ An \emph{environment} in {\LaTeX} is a section of the document that is formatted
 This document demonstrates various environments, including the use of scripts, tables, figures, algorithms, and framed environments.
 The basic usage of an environment is shown below.
 
-\begin{minted}{latex}
+\begin{latexcode}
 \begin{environment}
   some content included in the environment
 \end{environment}
-\end{minted}
+\end{latexcode}
 
-Here are some common environments used in {\LaTeX} including \texttt{enumerate}, \texttt{itemize}, and \texttt{displayquote}.
+Here are some common environments used in {\LaTeX} including \verb|enumerate|, \verb|itemize|, and \verb|displayquote|.
 
-\noindent\rule{\linewidth}{0.4pt}
+\noindent\rule{\linewidth}{0.5pt}
 
 \begin{multicols}{2}
   \begin{enumerate}
@@ -29,7 +29,7 @@ Here are some common environments used in {\LaTeX} including \texttt{enumerate},
   \end{latexcode}
 \end{multicols}
 
-\noindent\rule{\linewidth}{0.4pt}
+\noindent\rule{\linewidth}{0.5pt}
 
 \begin{multicols}{2}
   \begin{itemize}
@@ -46,26 +46,26 @@ Here are some common environments used in {\LaTeX} including \texttt{enumerate},
   \end{latexcode}
 \end{multicols}
 
-\noindent\rule{\linewidth}{0.4pt}
+\noindent\rule{\linewidth}{0.5pt}
 
 \begin{multicols}{2}
   \begin{displayquote}
-    This is a quote, which uses the \texttt{csquotes} package with customization set inside the \texttt{document.sty} file.
+    This is a quote, which uses the \verb|csquotes| package with customization set inside the \verb|document.sty| file.
   \end{displayquote}
   \columnbreak{}
   \begin{latexcode}
 \begin{displayquote}
-  This is a quote, which uses the \texttt{csquotes} package with customization set inside the \texttt{document.sty} file.
+  This is a quote, which uses the \verb|csquotes| package with customization set inside the \verb|document.sty| file.
 \end{displayquote}
   \end{latexcode}
 \end{multicols}
 
-\noindent\rule{\linewidth}{0.4pt}
+\noindent\rule{\linewidth}{0.5pt}
 
 \subsection{Scripts}
 
-To include scripts in your document, the \texttt{minted} package is used.
-Here is an example of a \texttt{python} script:
+To include scripts in your document, the \verb|minted| package is used.
+Here is an example of a \verb|python| script:
 
 \begin{multicols}{2}
   \begin{minted}{python}
@@ -84,12 +84,25 @@ hello_world()
   \end{latexcode}
 \end{multicols}
 
+\subsection{Algorithms}
+
+
 \subsection{Tables}
-Use the package \texttt{booktabs} for better table formatting.
+
+All tables must be centered, neat, legible and located at the top of the page.
+The table title always appears before the table itself, and must be in lower case (except for first word and proper nouns).
+Note that publication-quality tables \emph{do not contain vertical rules}~\autocite{neurips2023template}. 
+This document template uses the \href{https://www.ctan.org/pkg/booktabs}{\Verb|booktabs|} package, which allows for typesetting high-quality, professional, and publication-ready tables. 
+(See Table~\ref{tab:sample}.)
+
+\input{content/sample_table.tex}
 
 \subsection{Figures}
 
-\subsection{Algorithms}
+All figures must be centered, neat, legible and located at the top of the page. 
+The figure caption always appears after the figure itself, and should be in lower case (except for first word and proper nouns)~\autocite{neurips2023template}. 
+Colored figures are allowed, but it is best for the figure captions and the paper body to be legible if the paper is printed in either black/white or in color.
+(See Figure~\ref{fig:sample}.)
 
 \subsection{Frames}
 
