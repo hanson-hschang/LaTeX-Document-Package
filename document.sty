@@ -39,7 +39,7 @@
 %%----------------------------------------------------------------------------------------
 
 %% Load the geometry package for page layout
-\RequirePackage[margin=1in]{geometry}
+\RequirePackage[margin=0.5in]{geometry}
 
 %% Load the fancy headers
 \RequirePackage{fancyhdr}
@@ -73,6 +73,14 @@
 %% Load the graphicx package for including graphics
 \RequirePackage{graphicx}
 
+%% Load the multirow and multicol packages for advanced row and column formatting
+\RequirePackage{multirow}
+\RequirePackage{multicol}
+
+%% Load the quotes package for better quotation handling
+\RequirePackage{csquotes} 
+\renewcommand{\mkbegdispquote}[2]{\itshape}
+
 % \usepackage{tikz}
 % \usepackage{MnSymbol}
 % \usepackage{dsfont}
@@ -86,8 +94,6 @@
 % \usepackage{nicefrac}
 % \usepackage{arydshln}
 % \usepackage{soul}
-% \usepackage{multirow}
-% \usepackage{multicol}
 % \usepackage{indentfirst}
 % \usepackage[
 %     colorlinks=true,
@@ -95,9 +101,14 @@
 % ]{hyperref}
 % \usepackage{multimedia}
 
+%% Load the minted package for syntax highlighting in code listings
+\RequirePackage{minted}
+
 %% Load the booktabs package for better table formatting
 \RequirePackage{booktabs}
 
+%% Load the pbox package for paragraph boxes
+% \RequirePackage{pbox}
 
 % %\usepackage{algorithm2e}
 % \usepackage{algorithm}
@@ -106,8 +117,6 @@
 % \renewcommand{\algorithmicensure}{\textbf{Output:}}
 % \algrenewcommand\alglinenumber[1]{#1:}
 
-
-% \usepackage{pbox}
 
 %%----------------------------------------------------------------------------------------
 %%   THEOREM-LIKE ENVIRONMENTS
