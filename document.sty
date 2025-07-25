@@ -39,13 +39,16 @@
 %%----------------------------------------------------------------------------------------
 
 %% Load the geometry package for page layout
-\RequirePackage[margin=0.5in]{geometry}
+\RequirePackage[
+  margin=0.5in,
+  bottom=1in,
+]{geometry}
 
 %% Load the fancy headers
 \RequirePackage{fancyhdr}
 \pagestyle{fancy} %% Set the page style to fancy
 \fancyhf{} %% Clear existing header and footer
-\fancyhead[R]{\leftmark}
+\fancyhead[C]{\leftmark}
 \fancyfoot[C]{\thepage}
 \setlength{\headheight}{0.5in}
 
@@ -100,8 +103,8 @@
 
 %% Load the hyperref package for hyperlinks
 \RequirePackage[
-    colorlinks=true,
-    allcolors=.
+  colorlinks=true,
+  allcolors=.
 ]{hyperref}
 
 %% Load the fancyvrb package for fancy verbatim text handling
@@ -133,13 +136,7 @@
 %% Load the pbox package for paragraph boxes
 % \RequirePackage{pbox}
 
-% %\usepackage{algorithm2e}
-% \usepackage{algorithm}
-% \usepackage{algpseudocode}
-% \renewcommand{\algorithmicrequire}{\textbf{Input:}}
-% \renewcommand{\algorithmicensure}{\textbf{Output:}}
-% \algrenewcommand\alglinenumber[1]{#1:}
-
+%% Load the algorithm and algpseudocode packages for algorithm formatting
 \RequirePackage{algorithm}
 \RequirePackage{algpseudocode}
 
