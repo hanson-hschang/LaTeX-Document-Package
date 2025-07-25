@@ -60,6 +60,9 @@
 %% Load the bibliography package
 \RequirePackage[backend=biber, style=apa]{biblatex}
 
+% Change parentheses to square brackets for parenthetical citations like \autocite
+\renewcommand*{\mkbibparens}[1]{\bibopenbracket#1\bibclosebracket}
+
 %% Load the appendix package
 \RequirePackage{appendix}
 
@@ -95,11 +98,16 @@
 % \usepackage{arydshln}
 % \usepackage{soul}
 % \usepackage{indentfirst}
-% \usepackage[
-%     colorlinks=true,
-%     allcolors=.
-% ]{hyperref}
 % \usepackage{multimedia}
+
+%% Load the hyperref package for hyperlinks
+\RequirePackage[
+    colorlinks=true,
+    allcolors=.
+]{hyperref}
+
+%% Load the fancyvrb package for fancy verbatim text handling
+\RequirePackage{fancyvrb}
 
 %% Load the minted package for syntax highlighting in code listings
 \RequirePackage{minted}
