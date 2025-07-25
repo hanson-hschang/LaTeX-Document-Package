@@ -1,17 +1,48 @@
 \section{Format}
 
-This project is hosted on GitHub and serves as a template for creating {\LaTeX} documents. 
+This is a template for creating \LaTeX{} documents. 
+The style file \Verb|document.sty|, written in \LaTeXe{}, defines the overall layout and formatting of the document.
 The theorem-like environments are inspired by the template~\autocite{sleepymalc2022template}.
 For detail implementation, refer to the GitHub repository~\autocite{chang2025document}.
 
-\subsection{Page layout}
+\subsection{Section \& content}
+
+The default font size is set to 11pt, and the document class is set to \Verb|article| with two-sided printing.
+The document is divided into sections, and the content is included from separate files using the \Verb|\addcontent| command.
+The sections are numbered automatically, and the section titles are displayed in boldface.
+The content is organized into directories, with the main content in the \Verb|content| directory and the appendix content in the \Verb|appendix| directory.
+The \Verb|\setdirectory| command is used to specify the directory for the main content, and the \Verb|\setappendix| command is used to specify the directory for the appendix content.
+The \Verb|\addcontent| command is used to include the content from the specified directory.
+To add a new section, create a new file in the \Verb|content| directory and use the \Verb|\addcontent{filename}| command to include it in the main document.
+In the new file, use the \Verb|\section{Section Title}| command to create a new section.
+Within the section, you can use the \Verb|\subsection{Subsection title}| command to create subsections.
 
 \subsection{Header \& footer}
 
-\subsection{Hyperlink}
+The header and footer are set using the \Verb|fancyhdr| package.
+The header contains the section number and title at the center, and the footer contains the page number also at the center.
+The header height is set to 0.5 inches and the margins are set to 0.5 inches on the left and right, and 1 inch at the bottom.
+Footnotes are provided and should be used sparingly. 
+If you do require a footnote, it should be properly typeset after the phrase (and after punctuation marks if there is one.)
+Footnotes are created using the \Verb|\footnote{text}| command. 
+The footnote text is placed at the bottom of the page.\footnote{The footnote text is automatically numbered, formatted and placed at the bottom of the page like this.}
 
-\subsection{Footnote}
 
-\subsection{Citation}
+\subsection{Hyperlink \& reference}
 
-\subsection{Reference}
+The \href{https://ctan.org/pkg/hyperref}{\Verb|hyperref|} package is used to create hyperlinks in the document.
+The color box is disabled for the links to ensure that the document is print-friendly.
+A sample usage is as follows: \Verb|\href{link}{text}|.
+Other than the hyperlinks, the other is using the macro \Verb|\ref{name}| to reference the labeled (sub)section, equation, figure, table, algorithm, or theorem-like environment.
+The labeling is done using the \Verb|\label{name}| command, which is placed right after the (sub)section or within the environment.
+
+\subsection{Citation \& bibliography}
+
+The \href{https://ctan.org/pkg/biblatex}{\Verb|biblatex|} package is used for managing citations and bibliographies.
+The bibliography file is specified using the \Verb|\addbibresource{filename.bib}| command.
+Citations are created using the \Verb|\autocite{key}| command, where \Verb|key| is the citation key defined in the bibliography file.
+The bibliography is printed at the end of the document using the \Verb|\printbibliography| command.
+The bibliography style is set to APA using the \Verb|style=apa| option when loading the \Verb|biblatex| package.
+The backend for the bibliography is set to Biber using the \Verb|backend=biber| option.
+While the bibtex is more classical, Biber provides more advanced features and better support for modern bibliography styles.
+It is recommended to use Biber for new documents, and this template is set up to use Biber by default.
