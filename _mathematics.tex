@@ -132,13 +132,33 @@
 
 \newcommand{\union}{\bigcup}
 
-\newcommand{\sigmaalgebra}[1]{\sigma\left\{#1\right\}}
+\newcommand{\sigmaAlgebra}[1]{\sigma\left(#1\right)}
 \newcommand{\indicator}[1]{\textbf{1}_{\left\{#1\right\}}}
-\newcommand{\Probability}[1]{\mathsf{P}\left\{#1\right\}}
-\newcommand{\Expectation}[1]{\mathsf{E}\left[#1\right]}
+\NewDocumentCommand{\Probability}{o m}{
+  \mathsf{P}
+  \IfValueT{#1}{_{#1}}
+  \IfNoValueT{#1}{}
+  \left[#2\right]
+}
+\NewDocumentCommand{\Expectation}{o m}{
+  \mathsf{E}
+  \IfValueT{#1}{_{#1}}
+  \IfNoValueT{#1}{}
+  \left[#2\right]
+}
+\NewDocumentCommand{\Variance}{o m}{
+  \mathsf{Var}
+  \IfValueT{#1}{_{#1}}
+  \IfNoValueT{#1}{}
+  \left[#2\right]
+}
 
 \newcommand{\Dim}{\textnormal{Dim}}
 \renewcommand{\dim}{\mathsf{d}}
 
 \DeclareMathOperator*{\argmax}{arg\,max}
 \DeclareMathOperator*{\argmin}{arg\,min}
+
+\newcommand{\subjectto}{\textnormal{s.t.}}
+
+\newcommand{\Order}[1]{\mathcal{O}\left(#1\right)}
