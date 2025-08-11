@@ -13,7 +13,7 @@
 % \ProcessKeyvalOptions*
 
 %% Load the xparse package for advanced command definitions
-% \RequirePackage{xparse}
+\RequirePackage{xparse}
 
 %%----------------------------------------------------------------------------------------
 %%   CONTENT DIRECTORY MANAGEMENT
@@ -23,15 +23,15 @@
 \newcommand{\document@directory}{.} 
 
 %% Update the content directory
-\newcommand{\setdirectory}[1]{
-  \renewcommand{\document@directory}{#1}
+\NewDocumentCommand{\setdirectory}{O{.}}{%
+  \renewcommand{\document@directory}{#1}%
 }
 
 %% Update the content directory for appendices
-\newcommand{\setappendix}[1]{
-  \renewcommand{\document@directory}{#1}
-  \appendix
-  \appendixpage{}
+\NewDocumentCommand{\setappendix}{O{.}}{%
+  \renewcommand{\document@directory}{#1}%
+  \appendix%
+  \appendixpage{}%
 }
 
 %% Load the content .tex file from the specified directory
@@ -170,7 +170,7 @@
 %% Load the caption and subcaption packages for figure and table captions
 \RequirePackage{caption}
 \RequirePackage{subcaption}
-\captionsetup{labelfont = bf, labelsep = period, font = {footnotesize, sf}}
+\captionsetup{labelfont = bf, labelsep = period, font = {footnotesize}}
 
 %% Load the multimedia package for embedding movie and sound files
 \RequirePackage{multimedia}
