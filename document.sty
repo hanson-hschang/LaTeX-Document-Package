@@ -1,0 +1,389 @@
+%% document.sty requires LaTeX2e format
+\NeedsTeXFormat{LaTeX2e}
+
+%% Define the style package name as 'document'
+\ProvidesPackage{document}[2025/07/23 Document Package]
+
+%% Load the kvoptions package for key-value options
+% \RequirePackage{kvoptions}
+% \SetupKeyvalOptions{
+%   family=document,
+%   prefix=document@
+% }
+% \ProcessKeyvalOptions*
+
+%% Load the xparse package for advanced command definitions
+\RequirePackage{xparse}
+
+% Load the ifthen package for conditional statements
+\RequirePackage{ifthen}
+
+%%----------------------------------------------------------------------------------------
+%%   CONTENT DIRECTORY MANAGEMENT
+%%----------------------------------------------------------------------------------------
+
+%% Set the default content directory
+\newcommand{\document@directory}{.} 
+
+%% Update the content directory
+\NewDocumentCommand{\setdirectory}{O{.}}{%
+  \renewcommand{\document@directory}{#1}%
+}
+
+%% Update the content directory for appendices
+\NewDocumentCommand{\setappendix}{O{.}}{%
+  \renewcommand{\document@directory}{#1}%
+  \appendix%
+  \appendixpage{}%
+}
+
+%% Load the content .tex file from the specified directory
+\newcommand{\addcontent}[1]{\input{\document@directory/#1}}
+
+%%----------------------------------------------------------------------------------------
+%%   DOCUMENT STYLE SETUP
+%%----------------------------------------------------------------------------------------
+
+%% Load the geometry package for page layout
+\RequirePackage[
+  margin=0.5in,
+  bottom=1in,
+]{geometry}
+
+%% Load the fancy headers
+\RequirePackage{fancyhdr}
+\pagestyle{fancy} %% Set the page style to fancy
+\fancyhf{} %% Clear existing header and footer
+\fancyhead[C]{\leftmark}
+\fancyfoot[C]{\thepage}
+\setlength{\headheight}{0.5in}
+
+%% Load the empty page package to avoid headers on empty pages
+\RequirePackage{emptypage}
+
+%%----------------------------------------------------------------------------------------
+%%   PACKAGE LOADING
+%%----------------------------------------------------------------------------------------
+
+%% Load the encoding package for UTF-8 support
+%% (This should be loaded before any other packages that use characters, e.g. fontenc, biblatex)
+\RequirePackage[utf8]{inputenc}
+
+%% Load the font encoding package for better font support
+\RequirePackage[T1]{fontenc}
+
+%% Load the textcomp package for additional text symbols
+\RequirePackage{textcomp}
+
+%% Load the bibliography package
+\makeatletter
+\@ifundefined{opt@biblatex.sty}{
+  \RequirePackage[backend=biber, style=apa]{biblatex}
+}{
+  \RequirePackage[backend=biber]{biblatex}
+}
+\makeatother
+%% Change parentheses to square brackets for parenthetical citations like \autocite
+\renewcommand*{\mkbibparens}[1]{\bibopenbracket#1\bibclosebracket}
+
+%% Load the appendix package
+\RequirePackage{appendix}
+
+%% Load the xcolor package for color support with the
+%% dvipsnames option providing a wide range of predefined colors
+\RequirePackage[dvipsnames]{xcolor}
+
+%% Load math packages for mathematical typesetting
+\RequirePackage{amsmath, amsfonts, amsthm, amssymb, mathtools, mathrsfs, mathdots}
+
+%% Load the nicefrac package for typesetting fractions
+\RequirePackage{nicefrac}
+
+%% Load the cancel package for striking out text in math mode
+\RequirePackage{cancel}
+
+%% Load the Mathematical Nature Symbols package for additional math symbols
+\RequirePackage{MnSymbol}
+
+%% Load the Double-Struck Font package for double-struck symbols \mathds{...}
+\RequirePackage{dsfont}
+
+%% Load the Upgreek package for upright Greek letters
+\RequirePackage{upgreek}
+
+%% Load the systeme package for typesetting systems of linear (and non-linear) equations.
+\RequirePackage{systeme}
+
+%% Load the siunitx package for SI units and numbers
+%% Use the locale option to set the number formatting according to the specified location.
+\RequirePackage[locale=US]{siunitx}
+
+%% Load the graphicx package for including graphics
+\RequirePackage{graphicx}
+
+%% Load the TikZ package for creating graphics
+\RequirePackage{tikz}
+\usetikzlibrary{intersections, angles, quotes, positioning}
+\usetikzlibrary{arrows.meta}
+
+%% Load the pgfplots package for creating plots
+\RequirePackage{pgfplots}
+\pgfplotsset{compat=1.13}
+
+%% Load the multirow and multicol packages for advanced row and column formatting
+\RequirePackage{multirow}
+\RequirePackage{multicol}
+
+%% Load the quotes package for better quotation handling
+\RequirePackage{csquotes} 
+\renewcommand{\mkbegdispquote}[2]{\itshape}
+
+%% Load the hyperref package for hyperlinks
+\RequirePackage[
+  colorlinks=true,
+  allcolors=.
+]{hyperref}
+
+%% Load the soul package for text highlighting
+% \RequirePackage{soulutf8} %% Use this for UTF-8 support with highlighting
+\RequirePackage{soul}
+\newcommand{\spaceout}{\so}
+
+%% Load the fancyvrb package for fancy verbatim text handling
+\RequirePackage{fancyvrb}
+
+%% Load the enumitem package for advanced list formatting
+\RequirePackage{enumitem}
+
+%% Load the minted package for syntax highlighting in code listings
+\RequirePackage{minted}
+%% Define 'latexcode' environment as a wrapper for 'minted' with LaTeX syntax highlighting
+\newminted{latex}{
+  breaklines, 
+  breakanywhere, 
+  fontsize=\footnotesize, 
+  linenos=true, 
+  numbersep=5pt, 
+  frame=lines, 
+  framesep=2mm, 
+  tabsize=2, 
+  autogobble=true
+}
+
+%% Load the booktabs package for better table formatting
+\RequirePackage{booktabs}
+
+%% Load the array dashed line package for advanced array and tabular features
+\RequirePackage{arydshln}
+
+%% Load the caption and subcaption packages for figure and table captions
+\RequirePackage{caption}
+\RequirePackage{subcaption}
+\captionsetup{labelfont = bf, labelsep = period, font = {footnotesize}}
+
+%% Load the multimedia package for embedding movie and sound files
+\RequirePackage{multimedia}
+
+%% Load the pbox package for paragraph boxes
+\RequirePackage{pbox}
+
+%% Load the algorithm and algpseudocode packages for algorithm formatting
+\RequirePackage{algorithm}
+\RequirePackage{algpseudocode}
+
+%% Load the float package for controlling float placement
+\RequirePackage{float}
+
+%% Load the nameref package for referencing names
+\RequirePackage{nameref}
+
+%%----------------------------------------------------------------------------------------
+%%   THEOREM-LIKE ENVIRONMENTS
+%%----------------------------------------------------------------------------------------
+
+%% Provides advanced control over theorem-like environments
+\RequirePackage{thmtools}
+%% Set the default theorem style
+\theoremstyle{definition}
+
+%% For creating framed boxes around environments
+\RequirePackage[framemethod=TikZ]{mdframed}
+%% General setup for framed environments
+\mdfsetup{skipabove=1em, skipbelow=0em}
+
+%% --- Custom Box Styles ---
+
+%% Red box style
+\declaretheoremstyle[
+  headfont=\bfseries\sffamily\color{WildStrawberry!70!black},
+  bodyfont=\normalfont,
+  mdframed={
+    linewidth=2pt,
+    rightline=false, topline=false, bottomline=false,
+    linecolor=WildStrawberry, backgroundcolor=WildStrawberry!5,
+    nobreak=false
+  }
+]{thmredbox}
+
+%% Orange box style
+\declaretheoremstyle[
+  headfont=\bfseries\sffamily\color{BurntOrange!70!black},
+  bodyfont=\normalfont,
+  mdframed={
+    linewidth=2pt,
+    rightline=false, topline=false, bottomline=false,
+    linecolor=BurntOrange, backgroundcolor=BurntOrange!5,
+    nobreak=false
+  }
+]{thmorangebox}
+
+%% Green box style
+\declaretheoremstyle[
+  headfont=\bfseries\sffamily\color{ForestGreen!70!black},
+  bodyfont=\normalfont,
+  mdframed={
+    linewidth=2pt,
+    rightline=false, topline=false, bottomline=false,
+    linecolor=ForestGreen, backgroundcolor=ForestGreen!5,
+    nobreak=false
+  }
+]{thmgreenbox}
+
+%% Blue box style
+\declaretheoremstyle[
+  headfont=\bfseries\sffamily\color{NavyBlue!70!black}, 
+  bodyfont=\normalfont,
+  mdframed={
+    linewidth=2pt,
+    rightline=false, topline=false, bottomline=false,
+    linecolor=NavyBlue, backgroundcolor=NavyBlue!5,
+    nobreak=false
+  }
+]{thmbluebox}
+
+%% Blue line style
+\declaretheoremstyle[
+  headfont=\bfseries\sffamily\color{NavyBlue!70!black}, 
+  bodyfont=\normalfont,
+  mdframed={
+    linewidth=2pt,
+    rightline=false, topline=false, bottomline=false,
+    linecolor=NavyBlue, backgroundcolor=NavyBlue!2,
+    nobreak=false
+  }
+]{thmblueline}
+
+%% Purple box style
+\declaretheoremstyle[
+  headfont=\bfseries\sffamily\color{Violet!70!black},
+  bodyfont=\normalfont,
+  mdframed={
+    linewidth=2pt,
+    rightline=false, topline=false, bottomline=false,
+    linecolor=Violet, backgroundcolor=Violet!5,
+    nobreak=false
+  }
+]{thmpurplebox}
+
+%% Brown box style
+\declaretheoremstyle[
+  headfont=\bfseries\sffamily\color{RawSienna!70!black},
+  bodyfont=\normalfont,
+  mdframed={
+    linewidth=2pt,
+    rightline=false, topline=false, bottomline=false,
+    linecolor=RawSienna, backgroundcolor=RawSienna!5,
+    nobreak=false
+  }
+]{thmbrownbox}
+
+%% Gray box style
+\declaretheoremstyle[
+	headfont=\bfseries\sffamily\color{Gray!70!black}, 
+  bodyfont=\normalfont,
+	mdframed={
+    linewidth=2pt,
+    rightline=false, topline=false, bottomline=false,
+    linecolor=Gray, backgroundcolor=Gray!5,
+    nobreak=false
+  }
+]{thmgraybox}
+
+%% --- Theorem Declarations ---
+
+%% Definition environment
+\declaretheorem[style=thmgreenbox, name=Definition, numberwithin=section]{definition}
+
+%% Assumption environment
+\declaretheorem[style=thmorangebox, name=Assumption, numberwithin=section]{assumption}
+
+%% Conjecture environment
+\declaretheorem[style=thmpurplebox, name=Conjecture, numberwithin=section]{conjecture}
+
+%% Lemma environment 
+\declaretheorem[style=thmbrownbox, name=Lemma, numberwithin=section]{lemma}
+
+%% Theorem environment
+\declaretheorem[style=thmbrownbox, name=Theorem, numberwithin=section]{theorem}
+
+%% Corollary environment 
+\declaretheorem[style=thmbrownbox, name=Corollary, numberwithin=section]{corollary}
+
+%% Proposition environment
+\declaretheorem[style=thmbrownbox, name=Proposition, numberwithin=section]{proposition}
+
+%% Proof environment
+\renewenvironment{proof}[1][\proofname]{
+  \vspace{-11pt}
+  \par
+  \pushQED{\null\hfill\(\blacksquare\)}
+	\normalfont
+	\trivlist
+	\item[
+    \hskip\labelsep
+	  \color{RawSienna!70!black}\sffamily\bfseries
+	  #1\@addpunct{.}
+  ]\ignorespaces
+	\begin{mdframed}[
+    linewidth=2pt,
+    rightline=false, topline=false, bottomline=false,
+    linecolor=RawSienna, backgroundcolor=RawSienna!2,
+    nobreak=false
+  ]
+}{
+	\popQED
+  \endtrivlist
+  \@endpefalse
+	\end{mdframed}
+}
+
+%% Remark environment
+\declaretheorem[style=thmredbox, name=Remark, numberwithin=section]{remark}
+
+%% Example environment
+\declaretheorem[style=thmbluebox, name=Example, numberwithin=section]{example}
+
+%% Solution environment
+\declaretheorem[style=thmblueline, name=Solution, numberwithin=section]{tmpsolution}
+\newenvironment{solution}[1][]{
+  \vspace{-11pt}
+  \pushQED{\null\hfill\(\square\)}
+  \begin{tmpsolution}
+}{
+  \popQED
+  \end{tmpsolution}
+}
+
+%% Problem environment
+\declaretheorem[style=thmgraybox, name=Problem, numberwithin=section]{problem}
+
+% --- Hyperref Integration ---
+% Ensures that hyperrefs for theorems link correctly
+
+% \renewcommand\theHdefinition{\thesection.\arabic{definition}}
+% \renewcommand\theHtheorem{\thesection.\arabic{theorem}}
+% \renewcommand\theHlemma{\thesection.\arabic{lemma}}
+% \renewcommand\theHproposition{\thesection.\arabic{proposition}}
+% \renewcommand\theHcorollary{\thesection.\arabic{corollary}}
+% \renewcommand\theHproblem{\thesection.\arabic{problem}}
+% \renewcommand\theHconjecture{\thesection.\arabic{conjecture}}
