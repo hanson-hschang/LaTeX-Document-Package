@@ -1,5 +1,5 @@
 
-name: Copy files to document-style-package branch
+name: Deploy to package branch
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
       - main
 
 jobs:
-  copy-files:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,22 +16,26 @@ jobs:
       with:
         path: main
 
-    - name: Checkout package branch
-      uses: actions/checkout@v3
-      with:
-        ref: package
-        path: package
-
-    - name: Copy files
+    - name: Checkout or create package branch
       run: |
-        cp main/_mathematics.tex package/_mathematics.tex
-        cp main/document.sty package/document.sty
-
-    - name: Commit and push changes
-      run: |
+        set -e
+        git clone "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" package
         cd package
+        if git checkout package; then
+          echo "Switched to existing 'package' branch."
+        else
+          echo "Branch 'package' does not exist. Creating orphan branch."
+          git checkout --orphan package
+          git rm -rf .
+        fi
+        cp ../main/_mathematics.tex .
+        cp ../main/document.sty .
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         git add .
-        git commit -m "Update style files from main branch" || echo "No changes to commit"
-        git push
+        if ! git diff --quiet --staged; then
+          git commit -m "Update style files from main branch"
+          git push -u origin package
+        else
+          echo "No changes to commit"
+        fi
