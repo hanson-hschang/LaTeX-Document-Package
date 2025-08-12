@@ -15,6 +15,9 @@
 %% Load the xparse package for advanced command definitions
 \RequirePackage{xparse}
 
+% Load the ifthen package for conditional statements
+\RequirePackage{ifthen}
+
 %%----------------------------------------------------------------------------------------
 %%   CONTENT DIRECTORY MANAGEMENT
 %%----------------------------------------------------------------------------------------
@@ -73,7 +76,13 @@
 \RequirePackage{textcomp}
 
 %% Load the bibliography package
-\RequirePackage[backend=biber, style=apa]{biblatex}
+\makeatletter
+\@ifundefined{opt@biblatex.sty}{
+  \RequirePackage[backend=biber, style=apa]{biblatex}
+}{
+  \RequirePackage[backend=biber]{biblatex}
+}
+\makeatother
 %% Change parentheses to square brackets for parenthetical citations like \autocite
 \renewcommand*{\mkbibparens}[1]{\bibopenbracket#1\bibclosebracket}
 
