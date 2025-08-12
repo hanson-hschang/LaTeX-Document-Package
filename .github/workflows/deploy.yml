@@ -1,0 +1,37 @@
+
+name: Copy files to document-style-package branch
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  copy-files:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout main branch
+      uses: actions/checkout@v3
+      with:
+        path: main
+
+    - name: Checkout package branch
+      uses: actions/checkout@v3
+      with:
+        ref: package
+        path: package
+
+    - name: Copy files
+      run: |
+        cp main/_mathematics.tex package/_mathematics.tex
+        cp main/document.sty package/document.sty
+
+    - name: Commit and push changes
+      run: |
+        cd package
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git add .
+        git commit -m "Update style files from main branch" || echo "No changes to commit"
+        git push
