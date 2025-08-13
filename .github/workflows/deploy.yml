@@ -30,19 +30,21 @@ jobs:
           git checkout --orphan template
           git rm -rf .
         fi
+
         cp ../main/_mathematics.tex .
         cp ../main/document.sty .
         
-        sudo apt-get update
-        sudo apt-get install -y texlive-full
-
-        latexmk -pdf main.tex
-
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         git add .
+
+        if git diff --quiet --staged; then
+          echo "No changes to commit."
+          exit 0
+        fi
         
-        git commit -m "Update style files from main branch"
+        echo "Changes detected, committing to 'template' branch."
+        git commit -m "Update package files from main branch"
         git push -u origin template
 
     - name: Clean up
