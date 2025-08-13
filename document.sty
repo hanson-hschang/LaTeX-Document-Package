@@ -334,27 +334,17 @@
 
 %% Proof environment
 \renewenvironment{proof}[1][\proofname]{
-  \vspace{-11pt}
-  \par
   \pushQED{\null\hfill\(\blacksquare\)}
-	\normalfont
-	\trivlist
-	\item[
-    \hskip\labelsep
-	  \color{RawSienna!70!black}\sffamily\bfseries
-	  #1\@addpunct{.}
-  ]\ignorespaces
-	\begin{mdframed}[
+  \begin{mdframed}[
+    frametitle={\color{RawSienna!70!black}\sffamily\bfseries#1},
     linewidth=2pt,
     rightline=false, topline=false, bottomline=false,
     linecolor=RawSienna, backgroundcolor=RawSienna!2,
     nobreak=false
   ]
 }{
-	\popQED
-  \endtrivlist
-  \@endpefalse
-	\end{mdframed}
+  \popQED
+  \end{mdframed}
 }
 
 %% Remark environment
