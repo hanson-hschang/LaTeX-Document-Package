@@ -261,18 +261,6 @@
   }
 ]{thmbluebox}
 
-%% Blue line style
-\declaretheoremstyle[
-  headfont=\bfseries\sffamily\color{NavyBlue!70!black}, 
-  bodyfont=\normalfont,
-  mdframed={
-    linewidth=2pt,
-    rightline=false, topline=false, bottomline=false,
-    linecolor=NavyBlue, backgroundcolor=NavyBlue!2,
-    nobreak=false
-  }
-]{thmblueline}
-
 %% Purple box style
 \declaretheoremstyle[
   headfont=\bfseries\sffamily\color{Violet!70!black},
@@ -311,29 +299,30 @@
 
 %% --- Theorem Declarations ---
 
+%% Theorem environment
+\declaretheorem[style=thmbrownbox, name=Theorem, numberwithin=subsection]{theorem}
+
 %% Definition environment
-\declaretheorem[style=thmgreenbox, name=Definition, numberwithin=section]{definition}
+\declaretheorem[style=thmgreenbox, name=Definition, numberlike=theorem]{definition}
 
 %% Assumption environment
-\declaretheorem[style=thmorangebox, name=Assumption, numberwithin=section]{assumption}
+\declaretheorem[style=thmorangebox, name=Assumption, numberlike=theorem]{assumption}
 
 %% Conjecture environment
-\declaretheorem[style=thmpurplebox, name=Conjecture, numberwithin=section]{conjecture}
+\declaretheorem[style=thmpurplebox, name=Conjecture, numberlike=theorem]{conjecture}
 
 %% Lemma environment 
-\declaretheorem[style=thmbrownbox, name=Lemma, numberwithin=section]{lemma}
-
-%% Theorem environment
-\declaretheorem[style=thmbrownbox, name=Theorem, numberwithin=section]{theorem}
+\declaretheorem[style=thmbrownbox, name=Lemma, numberlike=theorem]{lemma}
 
 %% Corollary environment 
-\declaretheorem[style=thmbrownbox, name=Corollary, numberwithin=section]{corollary}
+\declaretheorem[style=thmbrownbox, name=Corollary, numberlike=theorem]{corollary}
 
 %% Proposition environment
-\declaretheorem[style=thmbrownbox, name=Proposition, numberwithin=section]{proposition}
+\declaretheorem[style=thmbrownbox, name=Proposition, numberlike=theorem]{proposition}
 
 %% Proof environment
 \renewenvironment{proof}[1][\proofname]{
+  \vspace{-11pt}
   \pushQED{\null\hfill\(\blacksquare\)}
   \begin{mdframed}[
     frametitle={\color{RawSienna!70!black}\sffamily\bfseries#1},
@@ -348,24 +337,29 @@
 }
 
 %% Remark environment
-\declaretheorem[style=thmredbox, name=Remark, numberwithin=section]{remark}
+\declaretheorem[style=thmredbox, name=Remark, numberlike=theorem]{remark}
 
 %% Example environment
-\declaretheorem[style=thmbluebox, name=Example, numberwithin=section]{example}
+\declaretheorem[style=thmbluebox, name=Example, numberlike=theorem]{example}
 
 %% Solution environment
-\declaretheorem[style=thmblueline, name=Solution, numberwithin=section]{tmpsolution}
-\newenvironment{solution}[1][]{
+\newenvironment{solution}[1][Solution]{
   \vspace{-11pt}
   \pushQED{\null\hfill\(\square\)}
-  \begin{tmpsolution}
+  \begin{mdframed}[
+    frametitle={\color{NavyBlue!70!black}\sffamily\bfseries#1},
+    linewidth=2pt,
+    rightline=false, topline=false, bottomline=false,
+    linecolor=NavyBlue, backgroundcolor=NavyBlue!2,
+    nobreak=false
+  ]
 }{
   \popQED
-  \end{tmpsolution}
+  \end{mdframed}
 }
 
 %% Problem environment
-\declaretheorem[style=thmgraybox, name=Problem, numberwithin=section]{problem}
+\declaretheorem[style=thmgraybox, name=Problem, numberlike=theorem]{problem}
 
 % --- Hyperref Integration ---
 % Ensures that hyperrefs for theorems link correctly
