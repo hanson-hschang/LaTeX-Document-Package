@@ -1,5 +1,5 @@
 
-name: Deploy to package branch
+name: Deploy to template branch
 
 on:
   push:
@@ -18,26 +18,35 @@ jobs:
       with:
         path: main
 
-    - name: Checkout or create package branch
+    - name: Checkout or create template branch
       run: |
         set -e
-        git clone "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" package
-        cd package
-        if git checkout package; then
-          echo "Switched to existing 'package' branch."
+        git clone "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" template
+        cd template
+        if git checkout template; then
+          echo "Switched to existing 'template' branch."
         else
-          echo "Branch 'package' does not exist. Creating orphan branch."
-          git checkout --orphan package
+          echo "Branch 'template' does not exist. Creating orphan branch."
+          git checkout --orphan template
           git rm -rf .
         fi
         cp ../main/_mathematics.tex .
         cp ../main/document.sty .
+        
+        sudo apt-get update
+        sudo apt-get install -y texlive-full
+
+        latexmk -pdf main.tex
+
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         git add .
-        if ! git diff --quiet --staged; then
-          git commit -m "Update style files from main branch"
-          git push -u origin package
-        else
-          echo "No changes to commit"
-        fi
+        
+        git commit -m "Update style files from main branch"
+        git push -u origin template
+
+    - name: Clean up
+      run: |
+        set -e
+        rm -rf main template
+        echo "Cleaned up temporary directories."
