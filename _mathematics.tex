@@ -132,6 +132,8 @@
 
 \newcommand{\union}{\bigcup}
 
+\newcommand{\independent}{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern3mu{#1#2}}}
 \newcommand{\sigmaAlgebra}[1]{\sigma\left(#1\right)}
 \newcommand{\indicator}[1]{\textbf{1}_{\left\{#1\right\}}}
 \NewDocumentCommand{\Probability}{o m}{
