@@ -237,6 +237,18 @@
   }
 ]{thmorangebox}
 
+%% Yellow box style
+\declaretheoremstyle[
+  headfont=\bfseries\sffamily\color{Goldenrod!70!black},
+  bodyfont=\normalfont,
+  mdframed={
+    linewidth=2pt,
+    rightline=false, topline=false, bottomline=false,
+    linecolor=Goldenrod, backgroundcolor=Goldenrod!5,
+    nobreak=false
+  }
+]{thmyellowbox}
+
 %% Green box style
 \declaretheoremstyle[
   headfont=\bfseries\sffamily\color{ForestGreen!70!black},
@@ -338,6 +350,9 @@
 
 %% Remark environment
 \declaretheorem[style=thmredbox, name=Remark, numberlike=theorem]{remark}
+
+%% Note environment
+\declaretheorem[style=thmyellowbox, name=Note, numberlike=theorem]{note}
 
 %% Example environment
 \declaretheorem[style=thmbluebox, name=Example, numberlike=theorem]{example}
