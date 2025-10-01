@@ -4,45 +4,9 @@
 %% Define the style package name as 'document'
 \ProvidesPackage{document}[2025/07/23 Document Package]
 
-%% Load the kvoptions package for key-value options
-% \RequirePackage{kvoptions}
-% \SetupKeyvalOptions{
-%   family=document,
-%   prefix=document@
-% }
-% \ProcessKeyvalOptions*
-
-%% Load the xparse package for advanced command definitions
-\RequirePackage{xparse}
-
-% Load the ifthen package for conditional statements
-\RequirePackage{ifthen}
-
-%%----------------------------------------------------------------------------------------
-%%   CONTENT DIRECTORY MANAGEMENT
-%%----------------------------------------------------------------------------------------
-
-%% Set the default content directory
-\newcommand{\document@directory}{.} 
-
-%% Update the content directory
-\NewDocumentCommand{\setdirectory}{O{.}}{%
-  \renewcommand{\document@directory}{#1}%
-}
-
-%% Update the content directory for appendices
-\NewDocumentCommand{\setappendix}{O{.}}{%
-  \renewcommand{\document@directory}{#1}%
-  \appendix%
-  \appendixpage{}%
-}
-
-%% Load the content .tex file from the specified directory
-\newcommand{\addcontent}[1]{\input{\document@directory/#1}}
-
-%%----------------------------------------------------------------------------------------
+%%-----------------------------------------------------------------------------
 %%   DOCUMENT STYLE SETUP
-%%----------------------------------------------------------------------------------------
+%%-----------------------------------------------------------------------------
 
 %% Load the geometry package for page layout
 \RequirePackage[
@@ -61,9 +25,19 @@
 %% Load the empty page package to avoid headers on empty pages
 \RequirePackage{emptypage}
 
-%%----------------------------------------------------------------------------------------
+%%-----------------------------------------------------------------------------
 %%   PACKAGE LOADING
-%%----------------------------------------------------------------------------------------
+%%-----------------------------------------------------------------------------
+
+%% Load the xparse package for advanced command definitions
+\RequirePackage{xparse}
+
+%% Load the ifthen package for conditional statements
+\RequirePackage{ifthen}
+
+%%-----------------------------------------------------------------------------
+%%   TEXT FORMATTING
+%%-----------------------------------------------------------------------------
 
 %% Load the encoding package for UTF-8 support
 %% (This should be loaded before any other packages that use characters, e.g. fontenc, biblatex)
@@ -74,20 +48,6 @@
 
 %% Load the textcomp package for additional text symbols
 \RequirePackage{textcomp}
-
-%% Load the bibliography package
-\makeatletter
-\@ifundefined{opt@biblatex.sty}{
-  \RequirePackage[backend=biber, style=apa]{biblatex}
-}{
-  \RequirePackage[backend=biber]{biblatex}
-}
-\makeatother
-%% Change parentheses to square brackets for parenthetical citations like \autocite
-\renewcommand*{\mkbibparens}[1]{\bibopenbracket#1\bibclosebracket}
-
-%% Load the appendix package
-\RequirePackage{appendix}
 
 %% Load the xcolor package for color support with the
 %% dvipsnames option providing a wide range of predefined colors
@@ -118,25 +78,9 @@
 %% Use the locale option to set the number formatting according to the specified location.
 \RequirePackage[locale=US]{siunitx}
 
-%% Load the graphicx package for including graphics
-\RequirePackage{graphicx}
-
-%% Load the TikZ package for creating graphics
-\RequirePackage{tikz}
-\usetikzlibrary{intersections, angles, quotes, positioning}
-\usetikzlibrary{arrows.meta}
-
-%% Load the pgfplots package for creating plots
-\RequirePackage{pgfplots}
-\pgfplotsset{compat=1.13}
-
-%% Load the multirow and multicol packages for advanced row and column formatting
-\RequirePackage{multirow}
-\RequirePackage{multicol}
-
-%% Load the quotes package for better quotation handling
-\RequirePackage{csquotes} 
-\renewcommand{\mkbegdispquote}[2]{\itshape}
+%% Load the pifont package for special symbols
+%% https://dl.icdst.org/pdfs/files3/1900293ae8829c4c53fe55f2c9f0077c.pdf
+\RequirePackage{pifont}
 
 %% Load the hyperref package for hyperlinks
 \RequirePackage[
@@ -152,8 +96,16 @@
 %% Load the fancyvrb package for fancy verbatim text handling
 \RequirePackage{fancyvrb}
 
+%% Load the quotes package for better quotation handling
+\RequirePackage{csquotes} 
+\renewcommand{\mkbegdispquote}[2]{\itshape}
+
 %% Load the enumitem package for advanced list formatting
 \RequirePackage{enumitem}
+
+%%-----------------------------------------------------------------------------
+%%   CODE ENVIRONMENTS
+%%-----------------------------------------------------------------------------
 
 %% Load the minted package for syntax highlighting in code listings
 \RequirePackage{minted}
@@ -170,26 +122,62 @@
   autogobble=true
 }
 
+%%-----------------------------------------------------------------------------
+%%   TABLE FORMATTING
+%%-----------------------------------------------------------------------------
+
 %% Load the booktabs package for better table formatting
 \RequirePackage{booktabs}
 
 %% Load the array dashed line package for advanced array and tabular features
 \RequirePackage{arydshln}
 
+%% Load the multirow and multicol packages for advanced row and column formatting
+\RequirePackage{multirow}
+\RequirePackage{multicol}
+
+%%-----------------------------------------------------------------------------
+%%   CAPTIONS FOR FIGURE AND TABLES
+%%-----------------------------------------------------------------------------
+
 %% Load the caption and subcaption packages for figure and table captions
 \RequirePackage{caption}
 \RequirePackage{subcaption}
 \captionsetup{labelfont = bf, labelsep = period, font = {footnotesize}}
 
-%% Load the multimedia package for embedding movie and sound files
-\RequirePackage{multimedia}
-
-%% Load the pbox package for paragraph boxes
-\RequirePackage{pbox}
+%%-----------------------------------------------------------------------------
+%%   ALGORITHM FORMATTING
+%%-----------------------------------------------------------------------------
 
 %% Load the algorithm and algpseudocode packages for algorithm formatting
 \RequirePackage{algorithm}
 \RequirePackage{algpseudocode}
+
+%%-----------------------------------------------------------------------------
+%%   GRAPHICS AND PLOTTING
+%%-----------------------------------------------------------------------------
+
+%% Load the graphicx package for including graphics
+\RequirePackage{graphicx}
+
+%% Load the TikZ package for creating graphics
+\RequirePackage{tikz}
+\usetikzlibrary{intersections, angles, quotes, positioning}
+\usetikzlibrary{arrows.meta}
+
+%% Load the pgfplots package for creating plots
+\RequirePackage{pgfplots}
+\pgfplotsset{compat=1.13}
+
+%% Load the multimedia package for embedding movie and sound files
+\RequirePackage{multimedia}
+
+%%-----------------------------------------------------------------------------
+%%   ADDITIONAL FORMATTING TOOLS
+%%-----------------------------------------------------------------------------
+
+%% Load the pbox package for paragraph boxes
+\RequirePackage{pbox}
 
 %% Load the float package for controlling float placement
 \RequirePackage{float}
@@ -197,9 +185,50 @@
 %% Load the nameref package for referencing names
 \RequirePackage{nameref}
 
-%%----------------------------------------------------------------------------------------
+%%-----------------------------------------------------------------------------
+%%   CONTENT DIRECTORY MANAGEMENT
+%%-----------------------------------------------------------------------------
+
+%% Load the appendix package
+\RequirePackage{appendix}
+
+%% Set the default content directory
+\newcommand{\document@directory}{.} 
+
+%% Update the content directory
+\NewDocumentCommand{\setdirectory}{O{.}}{%
+  \renewcommand{\document@directory}{#1}%
+}
+
+%% Update the content directory for appendices
+\NewDocumentCommand{\setappendix}{O{.}}{%
+  \renewcommand{\document@directory}{#1}%
+  \appendix%
+  \appendixpage{}%
+}
+
+%% Load the content .tex file from the specified directory
+\newcommand{\addcontent}[1]{\input{\document@directory/#1}}
+
+%%-----------------------------------------------------------------------------
+%%   BIBLIOGRAPHY MANAGEMENT
+%%-----------------------------------------------------------------------------
+
+%% Load the bibliography package
+\makeatletter
+\@ifundefined{opt@biblatex.sty}{
+  \RequirePackage[backend=biber, style=apa]{biblatex}
+}{
+  \RequirePackage[backend=biber]{biblatex}
+}
+\makeatother
+
+%% Change parentheses to square brackets for parenthetical citations like \autocite
+\renewcommand*{\mkbibparens}[1]{\bibopenbracket#1\bibclosebracket}
+
+%%-----------------------------------------------------------------------------
 %%   THEOREM-LIKE ENVIRONMENTS
-%%----------------------------------------------------------------------------------------
+%%-----------------------------------------------------------------------------
 
 %% Provides advanced control over theorem-like environments
 \RequirePackage{thmtools}
