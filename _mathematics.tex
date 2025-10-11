@@ -1,6 +1,7 @@
 \newcommand{\composition}{\circ}
 \newcommand{\define}{=\vcentcolon}
 \newcommand{\defined}{\vcentcolon=}
+\newcommand{\isomorphic}{\cong}
 \newcommand{\complexes}{\mathbb{C}}
 \newcommand{\reals}{\mathbb{R}}
 \newcommand{\integers}{\mathbb{Z}}
@@ -93,6 +94,7 @@
 \renewcommand{\exp}[1]{\textnormal{ exp}\left(#1\right)}
 \newcommand{\csch}[1]{\textnormal{ csch}\left(#1\right)}
 \newcommand{\sech}[1]{\textnormal{ sech}\left(#1\right)}
+\newcommand{\softmax}[1]{\textnormal{softmax}\left(#1\right)}
 
 \newcommand{\sgn}[1]{\textnormal{sgn}\left(#1\right)}
 \newcommand{\abs}[1]{\left|#1\right|}
@@ -132,8 +134,7 @@
 
 \newcommand{\union}{\bigcup}
 
-\newcommand{\independent}{\protect\mathpalette{\protect\independenT}{\perp}}
-\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern3mu{#1#2}}}
+\newcommand{\ProbabilitySimplex}{\Delta}
 \newcommand{\sigmaAlgebra}[1]{\sigma\left(#1\right)}
 \newcommand{\indicator}[1]{\textbf{1}_{\left\{#1\right\}}}
 \NewDocumentCommand{\Probability}{o m}{
@@ -154,6 +155,7 @@
   \IfNoValueT{#1}{}
   \left[#2\right]
 }
+\newcommand{\entropy}[1]{\mathsf{H}\left(#1\right)}
 
 \newcommand{\Dim}{\textnormal{Dim}}
 \renewcommand{\dim}{\mathsf{d}}
@@ -164,3 +166,11 @@
 \newcommand{\subjectto}{\textnormal{s.t.}}
 
 \newcommand{\Order}[1]{\mathcal{O}\left(#1\right)}
+
+\newcommand{\mysetminusD}{\hbox{\tikz{\draw[line width=0.6pt,line cap=round] (3pt,0) -- (0,6pt);}}}
+\newcommand{\mysetminusT}{\mysetminusD}
+\newcommand{\mysetminusS}{\hbox{\tikz{\draw[line width=0.45pt,line cap=round] (2pt,0) -- (0,4pt);}}}
+\newcommand{\mysetminusSS}{\hbox{\tikz{\draw[line width=0.4pt,line cap=round] (1.5pt,0) -- (0,3pt);}}}
+
+\renewcommand{\setminus}{\mathbin{\mathchoice{\mysetminusD}{\mysetminusT}{\mysetminusS}{\mysetminusSS}}}
+
