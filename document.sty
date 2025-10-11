@@ -18,6 +18,7 @@
 \DeclareBoolOption[true]{colors}
 \DeclareBoolOption[true]{code}
 \DeclareBoolOption[false]{draft}
+\DeclareStringOption[ieee]{bibstyle}
 
 \ProcessKeyvalOptions*
 
@@ -231,20 +232,20 @@
 \RequirePackage{appendix}
 
 %% Content directory management
-\newcommand{\document@directory}{.}
+\newcommand{\doc@directory}{.}
 
 \NewDocumentCommand{\setdirectory}{O{.}}{%
-  \renewcommand{\document@directory}{#1}%
+  \renewcommand{\doc@directory}{#1}%
 }
 
 \NewDocumentCommand{\setappendix}{O{.}}{%
-  \renewcommand{\document@directory}{#1}%
+  \renewcommand{\doc@directory}{#1}%
   \appendix%
   \appendixpage{}%
 }
 
 \newcommand{\addcontent}[1]{%
-  \input{\document@directory/#1}%
+  \input{\doc@directory/#1}%
 }
 
 %%=============================================================================
@@ -253,7 +254,7 @@
 
 %% Load biblatex if not already loaded
 \@ifpackageloaded{biblatex}{}{%
-  \RequirePackage[backend=biber, style=apa]{biblatex}
+  \RequirePackage[backend=biber, style=\doc@bibstyle]{biblatex}
 }
 
 %% Square brackets for citations
@@ -307,6 +308,7 @@
 \declarethmbox{thmorangebox}{BurntOrange}{Orange}
 \declarethmbox{thmyellowbox}{Goldenrod}{Yellow}
 \declarethmbox{thmgreenbox}{ForestGreen}{Green}
+\declarethmbox{thmcyanbox}{Turquoise}{Cyan}
 \declarethmbox{thmbluebox}{NavyBlue}{Blue}
 \declarethmbox{thmpurplebox}{Violet}{Purple}
 \declarethmbox{thmbrownbox}{RawSienna}{Brown}
@@ -315,7 +317,6 @@
 %%-----------------------------------------------------------------------------
 %% Theorem-like Environments
 %%-----------------------------------------------------------------------------
-
 
 %% Definitions
 \declaretheorem[
@@ -393,6 +394,13 @@
   name=Problem,
   numberlike=definition
 ]{problem}
+
+%% TODOs
+\declaretheorem[
+  style=thmcyanbox,
+  name=TODO,
+  numberlike=definition
+]{todo}
 
 %%-----------------------------------------------------------------------------
 %% Proof and Solution Environments
