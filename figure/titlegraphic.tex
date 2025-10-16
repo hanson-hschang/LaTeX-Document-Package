@@ -1,0 +1,19 @@
+%% --- Settings ---
+\tikzset{
+  textbox/.style={
+    align=center, 
+    font=\Large,
+  }
+}
+
+%% --- Main Picture ---
+\begin{scope}[node distance=2cm] 
+  %% Sets the default distance between nodes
+   
+  %% Place the logo image inside a node named 'logo'
+  \node (logo) {\includegraphics[width=1.5cm]{logo.png}};
+
+  %% Place the text node to the right of the 'logo' node
+  \node[textbox, right of=logo] (text) {\LaTeX{}\\document};
+  
+\end{scope}

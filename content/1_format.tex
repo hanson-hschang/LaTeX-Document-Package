@@ -8,14 +8,20 @@ For detail implementation, refer to the GitHub repository~\autocite{chang2025doc
 \subsection{Section \& content}
 
 The default font size is set to 11pt, and the document class is set to \Verb|article| with two-sided printing.
-The document is divided into sections, and the content is included from separate files using the \Verb|\addcontent| command.
+The document is divided into sections, and the content can be included from separate files using the \Verb|\addcontent| command.
 The sections are numbered automatically, and the section titles are displayed in boldface.
 The content is organized into directories, with the main content in the \Verb|content| directory and the appendix content in the \Verb|appendix| directory.
 The \Verb|\setdirectory| command is used to specify the directory for the main content, and the \Verb|\setappendix| command is used to specify the directory for the appendix content.
 The \Verb|\addcontent| command is used to include the content from the specified directory.
-To add a new section, create a new file in the \Verb|content| directory and use the \Verb|\addcontent{filename}| command to include it in the main document.
-In the new file, use the \Verb|\section{Section Title}| command to create a new section.
+
+\paragraph{Section} 
+To add a new section, use the \Verb|\section{Section title}| command to create a new section.
 Within the section, you can use the \Verb|\subsection{Subsection title}| command to create subsections.
+
+\paragraph{Paragraph} 
+To add a new paragraph with a title, use the \Verb|\paragraph{Paragraph title}| command.
+The paragraph title is displayed in boldface, and the paragraph text follows the title on the same line after a space.
+To start a new paragraph without a title, simply leave a blank line between the paragraphs.
 
 \subsection{Header \& footer}
 
@@ -26,7 +32,6 @@ Footnotes are provided and should be used sparingly.
 If you do require a footnote, it should be properly typeset after the phrase (and after punctuation marks if there is one.)
 Footnotes are created using the \Verb|\footnote{text}| command. 
 The footnote text is placed at the bottom of the page.\footnote{The footnote text is automatically numbered, formatted and placed at the bottom of the page like this.}
-
 
 \subsection{Hyperlink \& reference}
 

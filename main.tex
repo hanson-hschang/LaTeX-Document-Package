@@ -25,8 +25,8 @@
 \graphicspath{{figure/}}
 
 %% Set the document metadata
-\title{\LaTeX{} Document Template}
-\author{Presenter Name}
+\title{\LaTeX{} Document Package}
+\author{Author Name}
 \date{\today}
 
 %% Begin the document
@@ -40,6 +40,15 @@
   %% Include the table of contents
   \setcounter{tocdepth}{2}
   \tableofcontents
+
+  %% Add the title graphic
+  \begin{center}
+    \vspace{3em}
+    \begin{tikzpicture}
+      \input{figure/titlegraphic.tex}
+    \end{tikzpicture}
+  \end{center}
+
   \newpage
 
   %% Include the main content from the specified directory: content
