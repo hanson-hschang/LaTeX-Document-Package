@@ -9,6 +9,9 @@
       \Else \Comment{recursive case: sum of the two preceding numbers}
         \State \Return \Call{Fibonacci}{$n-1$} + \Call{Fibonacci}{$n-2$} 
       \EndIf
+      \While{false} \Comment{this is just to illustrate the while loop syntax}
+        \State \textbf{break} \Comment{exit the loop immediately}
+      \EndWhile
     \EndFunction
   \end{algorithmic}
 \end{algorithm}
