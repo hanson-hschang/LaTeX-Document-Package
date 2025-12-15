@@ -3,11 +3,9 @@
 
 %% Load the document style package
 \usepackage[
-  colors=true,
-  theorems=true,
-  code=true,
-  draft=false,
+  header=formal,
 ]{document}
+
 
 %% Uncomment the following line if you want to indent the first paragraph of each section
 % \usepackage{indentfirst}
@@ -26,13 +24,16 @@
 
 %% Set the document metadata
 \title{\LaTeX{} Document Package}
-\author{Author Name}
+\author[Hanson.HSChang]{Heng-Sheng Chang}
 \date{\today}
+\purpose{Documentation of \LaTeX{} Document Package}
+\institute{\href{https://github.com/hanson-hschang/LaTeX-Document-Package}{\faGithub~hanson-hschang/LaTeX-Document-Package}}
 
 %% Begin the document
 \begin{document}
 
   \maketitle
+  \pagenumbering{gobble} 
 
   %% Include the abstract
   \addcontent{abstract}
@@ -50,6 +51,7 @@
   \end{center}
 
   \newpage
+  \pagenumbering{arabic} 
 
   %% Include the main content from the specified directory: content
   \setdirectory[content]
@@ -61,7 +63,6 @@
   \addcontent{1_appendix}
   
   %% Include the bibliography
-  \pagestyle{plain}
   \printbibliography{}
 
 \end{document}
