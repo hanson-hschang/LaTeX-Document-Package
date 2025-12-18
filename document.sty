@@ -347,13 +347,17 @@
 
 %% Theorem tools and framing
 \RequirePackage{thmtools}
-\RequirePackage[framemethod=TikZ]{mdframed}
+\RequirePackage[most]{tcolorbox}
+% Use the most option to load commonly used libraries, including
+% skins - for enhanced visual styles and effects
+% breakable - allows boxes to break across pages
+% hooks - for customization hooks
+% fitting - for content fitting options
+% magazine - for advanced layout features
+% raster - for arranging multiple boxes in grids
+% theorems - provides integration with theorem environments
 
-%% General mdframed setup
-\mdfsetup{
-  skipabove=1em,
-  skipbelow=0em
-}
+\tcbuselibrary{theorems}
 
 %% Set default theorem style
 \theoremstyle{definition}
@@ -362,164 +366,162 @@
 %% Box Styles
 %%-----------------------------------------------------------------------------
 
-%% Helper macro for declaring box styles
-\newcommand{\declarethmbox}[3]{%
-  % #1 = style name, #2 = color, #3 = display name
-  \declaretheoremstyle[
-    headfont=\bfseries\sffamily\color{#2!70!black},
-    bodyfont=\normalfont,
-    mdframed={
-      linewidth=2pt,
-      rightline=false,
-      topline=false,
-      bottomline=false,
-      linecolor=#2,
-      backgroundcolor=#2!5,
-      nobreak=false
+%% Helper macro for declaring box styles with tcolorbox
+%% Some examples: https://liam.page/2016/07/22/using-the-tcolorbox-package-to-create-a-new-theorem-environment/
+\newcommand{\declarecolorbox}[2]{%
+  % #1 = style name, #2 = color
+  \tcbset{
+    #1/.style={
+      enhanced,
+      breakable,
+      colback=#2!5,
+      colframe=#2,
+      boxrule=-0.01pt,
+      leftrule=2pt,
+      sharp corners,
+      left=2mm,
+      right=2mm,
+      fonttitle=\bfseries\sffamily,
+      coltitle=#2!70!black,
+      attach title to upper={~},
+      separator sign={},
+      description delimiters={(}{)},
+      description font=\mdseries, % medium series, i.e. non-bold
     }
-  ]{#1}
+  }%
 }
 
 %% Declare colored box styles
-\declarethmbox{thmredbox}{WildStrawberry}{Red}
-\declarethmbox{thmorangebox}{BurntOrange}{Orange}
-\declarethmbox{thmyellowbox}{Goldenrod}{Yellow}
-\declarethmbox{thmgreenbox}{ForestGreen}{Green}
-\declarethmbox{thmcyanbox}{Turquoise}{Cyan}
-\declarethmbox{thmbluebox}{NavyBlue}{Blue}
-\declarethmbox{thmpurplebox}{Violet}{Purple}
-\declarethmbox{thmbrownbox}{RawSienna}{Brown}
-\declarethmbox{thmgraybox}{Gray}{Gray}
+\declarecolorbox{thmredbox}{WildStrawberry}
+\declarecolorbox{thmorangebox}{BurntOrange}
+\declarecolorbox{thmyellowbox}{Goldenrod}
+\declarecolorbox{thmgreenbox}{ForestGreen}
+\declarecolorbox{thmcyanbox}{Turquoise}
+\declarecolorbox{thmbluebox}{NavyBlue}
+\declarecolorbox{thmpurplebox}{Violet}
+\declarecolorbox{thmbrownbox}{RawSienna}
+\declarecolorbox{thmgraybox}{Gray}
 
 %%-----------------------------------------------------------------------------
 %% Theorem-like Environments
 %%-----------------------------------------------------------------------------
 
+
 %% Definitions
-\declaretheorem[
-  style=thmgreenbox,
-  name=Definition,
-  numberwithin=subsection
-]{definition}
+\newtcbtheorem[number within=subsection]{definition}{Definition}{thmgreenbox}{def}
 
 %% Assumptions
-\declaretheorem[
-  style=thmorangebox,
-  name=Assumption,
-  numberlike=definition
-]{assumption}
+\newtcbtheorem[use counter from=definition]{assumption}{Assumption}{thmorangebox}{asm}
 
 %% Conjectures
-\declaretheorem[
-  style=thmpurplebox,
-  name=Conjecture,
-  numberlike=definition
-]{conjecture}
+\newtcbtheorem[use counter from=definition]{conjecture}{Conjecture}{thmpurplebox}{conj}
 
 %% Lemmas
-\declaretheorem[
-  style=thmbrownbox,
-  name=Lemma,
-  numberlike=definition
-]{lemma}
+\newtcbtheorem[use counter from=definition]{lemma}{Lemma}{thmbrownbox}{lem}
 
 %% Theorems
-\declaretheorem[
-  style=thmbrownbox,
-  name=Theorem,
-  numberlike=definition
-]{theorem}
+\newtcbtheorem[use counter from=definition]{theorem}{Theorem}{thmbrownbox}{thm}
 
 %% Corollaries
-\declaretheorem[
-  style=thmbrownbox,
-  name=Corollary,
-  numberlike=definition
-]{corollary}
+\newtcbtheorem[use counter from=definition]{corollary}{Corollary}{thmbrownbox}{cor}
 
 %% Propositions
-\declaretheorem[
-  style=thmbrownbox,
-  name=Proposition,
-  numberlike=definition
-]{proposition}
+\newtcbtheorem[use counter from=definition]{proposition}{Proposition}{thmbrownbox}{prop}
 
 %% Remarks
-\declaretheorem[
-  style=thmredbox,
-  name=Remark,
-  numberlike=definition
-]{remark}
+\newtcbtheorem[use counter from=definition]{remark}{Remark}{thmredbox}{remk}
 
 %% Notes
-\declaretheorem[
-  style=thmyellowbox,
-  name=Note,
-  numberlike=definition
-]{note}
+\newtcbtheorem[use counter from=definition]{note}{Note}{thmyellowbox}{note}
 
 %% Examples
-\declaretheorem[
-  style=thmbluebox,
-  name=Example,
-  numberlike=definition
-]{example}
+\newtcbtheorem[use counter from=definition]{example}{Example}{thmbluebox}{ex}
 
 %% Problems
-\declaretheorem[
-  style=thmgraybox,
-  name=Problem,
-  numberlike=definition
-]{problem}
+\newtcbtheorem[use counter from=definition]{problem}{Problem}{thmgraybox}{prob}
 
-%% TODOs
-\declaretheorem[
-  style=thmcyanbox,
-  name=TODO,
-  numberlike=definition
-]{todo}
+%% ToDos
+\newtcbtheorem[use counter from=definition]{todo}{ToDo}{thmcyanbox}{todo}
 
 %%-----------------------------------------------------------------------------
 %% Proof and Solution Environments
 %%-----------------------------------------------------------------------------
 
+%% Proof tcolorbox style
+\tcbset{
+  proofstyle/.style={
+    enhanced,
+    breakable,
+    colback=RawSienna!2,
+    colframe=RawSienna,
+    boxrule=-0.1pt,
+    leftrule=2pt,
+    sharp corners,
+    left=2mm,
+    right=2mm,
+    fonttitle=\bfseries\sffamily,
+    coltitle=RawSienna!70!black,
+    attach title to upper={\par\noindent},
+  }
+}
+
 %% Custom proof environment
 \renewenvironment{proof}[1][\proofname]{%
-  \vspace{-11pt}%
+  \par\removelastskip\vspace{-\baselineskip+2mm}%
   \pushQED{\null\hfill\(\blacksquare\)}%
-  \begin{mdframed}[
-    frametitle={\color{RawSienna!70!black}\sffamily\bfseries#1},
-    linewidth=2pt,
-    rightline=false,
-    topline=false,
-    bottomline=false,
-    linecolor=RawSienna,
-    backgroundcolor=RawSienna!2,
-    nobreak=false
+  \begin{tcolorbox}[
+    proofstyle, 
+    title=#1, 
   ]%
 }{%
   \popQED%
-  \end{mdframed}%
+  \end{tcolorbox}%
+}
+
+%% Solution tcolorbox style
+\tcbset{
+  solutionstyle/.style={
+    enhanced,
+    breakable,
+    colback=NavyBlue!2,
+    colframe=NavyBlue,
+    boxrule=-0.01pt,
+    leftrule=2pt,
+    sharp corners, 
+    before skip=0pt,
+    left=2mm,
+    right=2mm,
+    fonttitle=\bfseries\sffamily,
+    coltitle=NavyBlue!70!black,
+    attach title to upper={\par\noindent},
+  }
 }
 
 %% Solution environment
 \newenvironment{solution}[1][Solution]{%
-  \vspace{-11pt}%
+  \par\removelastskip\vspace{-\baselineskip+2mm}%
   \pushQED{\null\hfill\(\square\)}%
-  \begin{mdframed}[
-    frametitle={\color{NavyBlue!70!black}\sffamily\bfseries#1},
-    linewidth=2pt,
-    rightline=false,
-    topline=false,
-    bottomline=false,
-    linecolor=NavyBlue,
-    backgroundcolor=NavyBlue!2,
-    nobreak=false
+  \begin{tcolorbox}[
+    solutionstyle, 
+    title=#1, 
   ]%
 }{%
   \popQED%
-  \end{mdframed}%
+  \end{tcolorbox}%
 }
+
+\newcommand{\refdef}[1]{Definition~\ref{def:#1}}
+\newcommand{\refasm}[1]{Assumption~\ref{asm:#1}}
+\newcommand{\refconj}[1]{Conjecture~\ref{conj:#1}}
+\newcommand{\reflem}[1]{Lemma~\ref{lem:#1}}
+\newcommand{\refthm}[1]{Theorem~\ref{thm:#1}}
+\newcommand{\refcor}[1]{Corollary~\ref{cor:#1}}
+\newcommand{\refprop}[1]{Proposition~\ref{prop:#1}}
+\newcommand{\refremk}[1]{Remark~\ref{remk:#1}}
+\newcommand{\refnote}[1]{Note~\ref{note:#1}}
+\newcommand{\refex}[1]{Example~\ref{ex:#1}}
+\newcommand{\refprob}[1]{Problem~\ref{prop:#1}}
+\newcommand{\reftodo}[1]{ToDo~\ref{todo:#1}}
 
 \fi % End of \ifdoc@theorems
 
@@ -527,21 +529,13 @@
 %% CUSTOM COMMANDS (Optional Enhancement)
 %%=============================================================================
 
-%% Quick reference command
-\newcommand{\refalg}[1]{Algorithm~\ref{#1}}
-\newcommand{\reffig}[1]{Figure~\ref{#1}}
-\newcommand{\reftab}[1]{Table~\ref{#1}}
-\newcommand{\refdef}[1]{Definition~\ref{#1}}
-\newcommand{\refass}[1]{Assumption~\ref{#1}}
-\newcommand{\refconj}[1]{Conjecture~\ref{#1}}
-\newcommand{\reflem}[1]{Lemma~\ref{#1}}
-\newcommand{\refthm}[1]{Theorem~\ref{#1}}
-\newcommand{\refcor}[1]{Corollary~\ref{#1}}
-\newcommand{\refprop}[1]{Proposition~\ref{#1}}
-\newcommand{\refremk}[1]{Remark~\ref{#1}}
-\newcommand{\refnote}[1]{Note~\ref{#1}}
-\newcommand{\refex}[1]{Example~\ref{#1}}
-\newcommand{\refprob}[1]{Problem~\ref{#1}}
+%% Quick label and reference command
+\newcommand{\labelalg}[1]{\label{alg:#1}}
+\newcommand{\labelfig}[1]{\label{fig:#1}}
+\newcommand{\labeltab}[1]{\label{tab:#1}}
+\newcommand{\refalg}[1]{Algorithm~\ref{alg:#1}}
+\newcommand{\reffig}[1]{Figure~\ref{fig:#1}}
+\newcommand{\reftab}[1]{Table~\ref{tab:#1}}
 
 %%=============================================================================
 %% END OF PACKAGE

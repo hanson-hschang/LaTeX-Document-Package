@@ -5,7 +5,30 @@ The style file \Verb|document.sty|, written in \LaTeXe{}, defines the overall la
 The theorem-like environments are inspired by the template~\autocite{sleepymalc2022template}.
 For detail implementation, refer to the GitHub repository~\autocite{chang2025document}.
 
-\subsection{Section \& content}
+\subsection{Package Arguments}
+To use this package, one can use \Verb|\usepackage{document}| right after the \Verb|\documentclass{article}| command.
+This package also imports the following packages:
+\begin{itemize}
+  \item  Parsing and conditional: 
+\end{itemize}
+This package provides the following optional arguments:
+\begin{itemize}
+    \item \Verb|theorems|
+\end{itemize}
+
+
+\subsection{Header \& Footer}
+
+The header and footer are set using the \Verb|fancyhdr| package.
+The header contains the section number and title at the center, and the footer contains the page number also at the center.
+The header height is set to 0.5 inches and the margins are set to 0.5 inches on the left and right, and 1 inch at the bottom.
+Footnotes are provided and should be used sparingly. 
+If you do require a footnote, it should be properly typeset after the phrase (and after punctuation marks if there is one.)
+Footnotes are created using the \Verb|\footnote{text}| command. 
+The footnote text is placed at the bottom of the page.\footnote{The footnote text is automatically numbered, formatted and placed at the bottom of the page like this.}
+
+
+\subsection{Section \& Content}
 
 The default font size is set to 11pt, and the document class is set to \Verb|article| with two-sided printing.
 The document is divided into sections, and the content can be included from separate files using the \Verb|\addcontent| command.
@@ -23,17 +46,7 @@ To add a new paragraph with a title, use the \Verb|\paragraph{Paragraph title}| 
 The paragraph title is displayed in boldface, and the paragraph text follows the title on the same line after a space.
 To start a new paragraph without a title, simply leave a blank line between the paragraphs.
 
-\subsection{Header \& footer}
-
-The header and footer are set using the \Verb|fancyhdr| package.
-The header contains the section number and title at the center, and the footer contains the page number also at the center.
-The header height is set to 0.5 inches and the margins are set to 0.5 inches on the left and right, and 1 inch at the bottom.
-Footnotes are provided and should be used sparingly. 
-If you do require a footnote, it should be properly typeset after the phrase (and after punctuation marks if there is one.)
-Footnotes are created using the \Verb|\footnote{text}| command. 
-The footnote text is placed at the bottom of the page.\footnote{The footnote text is automatically numbered, formatted and placed at the bottom of the page like this.}
-
-\subsection{Hyperlink \& reference}
+\subsection{Hyperlink \& Reference}
 
 The \href{https://ctan.org/pkg/hyperref}{\Verb|hyperref|} package is used to create hyperlinks in the document.
 The color box is disabled for the links to ensure that the document is print-friendly.
@@ -41,7 +54,7 @@ A sample usage is as follows: \Verb|\href{link}{text}|.
 Other than the hyperlinks, the other is using the macro \Verb|\ref{name}| to reference the labeled (sub)section, equation, figure, table, algorithm, or theorem-like environment.
 The labeling is done using the \Verb|\label{name}| command, which is placed right after the (sub)section or within the environment.
 
-\subsection{Citation \& bibliography}
+\subsection{Citation \& Bibliography}
 
 The \href{https://ctan.org/pkg/biblatex}{\Verb|biblatex|} package is used for managing citations and bibliographies.
 The bibliography file is specified using the \Verb|\addbibresource{filename.bib}| command.

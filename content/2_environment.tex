@@ -79,7 +79,9 @@ def hello_world():
     print("Hello, World!")
 hello_world()
   \end{minted}
+
   \columnbreak{}
+  
   \begin{latexcode}
 \begin{minted}{python}
 def hello_world():
@@ -93,7 +95,7 @@ hello_world()
 \subsection{Algorithm}
 
 All algorithms must be presented clearly, concisely, and located at the top of the page.
-(See \refalg{alg:sample}.)
+(See \refalg{sample}.)
 The \Verb|algorithm| and \href{https://www.ctan.org/pkg/algpseudocodex/}{\Verb|algpseudocode|} packages are used to format algorithms.
 
 \addcontent{sample_algorithm}
@@ -104,7 +106,7 @@ All tables must be centered, neat, legible and located at the top of the page.
 The table title always appears before the table itself, and must be in lower case (except for first word and proper nouns).
 Note that publication-quality tables \emph{do not contain vertical rules}~\autocite{neurips2023template}. 
 This document template uses the \href{https://www.ctan.org/pkg/booktabs}{\Verb|booktabs|} package, which allows for typesetting high-quality, professional, and publication-ready tables. 
-(See \reftab{tab:sample}.)
+(See \reftab{sample}.)
 
 \addcontent{sample_table}
 
@@ -114,7 +116,7 @@ All figures must be centered, neat, legible and located at the top of the page.
 The figure caption always appears after the figure itself, and should be in lower case (except for first word and proper nouns), and smaller than the main text. 
 The \Verb|caption| and \Verb|subcaption| packages are used to format the figure captions.
 Colored figures are allowed, but it is best for the figure captions and the paper body to be legible if the paper is printed in either black/white or in color.
-(See \reffig{fig:sample}.)
+(See \reffig{sample}.)
 
 \addcontent{sample_figure}
 
@@ -122,68 +124,69 @@ Colored figures are allowed, but it is best for the figure captions and the pape
 
 This document demonstrates the usage of the custom theorem-like environments defined in the \texttt{document.sty} package.
 
-\begin{definition}[Sample Definition]
+\begin{definition}{Sample Definition}{sample}
   This is an example of a definition environment.
 \end{definition}
 
-\begin{assumption}[Sample Assumption]
+\begin{assumption}{Sample Assumption}{sample}
   This is an example of an assumption environment.
 \end{assumption}
 
-\begin{conjecture}[Sample Conjecture]
+\begin{conjecture}{Sample Conjecture}{sample}
   This is an example of a conjecture environment.
 \end{conjecture}
 
-\begin{lemma}[Sample Lemma]
-  This is an example of a lemma. It shares the same style as the theorem environment.
+\begin{lemma}{Sample Lemma}{sample}
+  Based on \refdef{sample}.
+  This is an example of a lemma. 
+  It shares the same style as the theorem environment.
 \end{lemma}
 \begin{proof}
   This is an example of a proof environment. It is used to provide a proof for the lemma.
 \end{proof}
 
-\begin{theorem}[Sample Theorem]
+\begin{theorem}{Sample Theorem}{sample}
   This is an example of a theorem environment. 
 \end{theorem}
 \begin{proof}[Sample Proof]
   This is an example of a proof for the theorem.
 \end{proof}
 
-\begin{corollary}[Sample Corollary]
+\begin{corollary}{Sample Corollary}{sample}
   This is an example of a corollary. It also shares the same style as the theorem environment.
 \end{corollary}
 \begin{proof}
   This is an example of a proof for the corollary.
 \end{proof}
 
-\begin{proposition}[Sample Proposition]
+\begin{proposition}{Sample Proposition}{sample}
   This is an example of a proposition. It also shares the same style as the theorem environment.
 \end{proposition}
 \begin{proof}
   This is an example of a proof for the proposition.
 \end{proof}
 
-\begin{remark}[Sample Remark]
+\begin{remark}{Sample Remark}{sample}
   This is an example of a remark environment.
 \end{remark}
 
-\begin{note}[Sample Note]
+\begin{note}{Sample Note}{sample}
   This is an example of a note environment.
 \end{note}
 
-\begin{example}[Sample Example]
+\begin{example}{Sample Example}{sample}
   This is an example of an example environment.
 \end{example}
-
 \begin{solution}
   This is an example of an solution environment.
 \end{solution}
 
-\begin{problem}[Sample Problem]
+\begin{problem}{Sample Problem}{sample}
   This is an example of a problem environment.
 \end{problem}
 
-\begin{todo}
-  This is an example of a TODO environment.
+\begin{todo}{Sample ToDo}{sample}
+  This is an example of a ToDo environment.
 \end{todo}
 
 These environments are designed to enhance the readability and organization of mathematical documents. 
