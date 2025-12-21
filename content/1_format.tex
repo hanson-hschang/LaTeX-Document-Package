@@ -1,66 +1,306 @@
 \section{Format}
 
-This is a template for creating \LaTeX{} documents. 
-The style file \Verb|document.sty|, written in \LaTeXe{}, defines the overall layout and formatting of the document.
+The style file \Verb|document.sty|, written in \LaTeXe{}, provides a comprehensive document formatting solution.
 The theorem-like environments are inspired by the template~\autocite{sleepymalc2022template}.
-For detail implementation, refer to the GitHub repository~\autocite{chang2025document}.
+For detailed implementation, refer to the GitHub repository~\autocite{chang2025document}.
 
-\subsection{Package Arguments}
-To use this package, one can use \Verb|\usepackage{document}| right after the \Verb|\documentclass{article}| command.
-This package also imports the following packages:
+\subsection{Package Usage and Options}
+
+To use this package, add \Verb|\usepackage{document}| after the \Verb|\documentclass| command.
+The package accepts several key-value options:
+
+\begin{description}
+    \item[\texttt{theorems=true/false}] (default: \texttt{true}) Enable or disable theorem-like environments (definition, theorem, lemma, corollary, proof, example, etc.). When \texttt{false}, the \Verb|thmtools| and \Verb|tcolorbox| packages are not loaded, and all theorem-like environments become unavailable.
+    
+    \item[\texttt{colors=true/false}] (default: \texttt{true}) Enable extended color support. When \texttt{true}, loads \Verb|xcolor| with \texttt{dvipsnames} option for additional color names.
+    
+    \item[\texttt{code=true/false}] (default: \texttt{true}) Enable syntax-highlighted code listings. When \texttt{true}, loads the \Verb|minted| package with pre-configured environments for LaTeX and Python code.
+    
+    \item[\texttt{timesfont=true/false}] (default: \texttt{true}) Use Times font family for the document text.
+    
+    \item[\texttt{header=default/formal}] (default: \texttt{default}) Select header style. The \texttt{default} style shows section titles at the center with page numbers in the footer. The \texttt{formal} style displays purpose, title, author, institute, and page count.
+    
+    \item[\texttt{bibstyle=style}] (default: \texttt{ieee}) Set bibliography style for \Verb|biblatex|. Common options include \texttt{ieee}, \texttt{apa}, \texttt{nature}, \texttt{numeric}, or \texttt{alphabetic}.
+\end{description}
+
+Example usage:
+\begin{latexcode}
+\usepackage[
+  theorems=true,
+  colors=true,
+  code=true,
+  header=formal,
+  bibstyle=ieee
+]{document}
+\end{latexcode}
+
+\subsection{Imported Packages}
+
+The \Verb|document.sty| package imports and configures numerous packages organized by functionality:
+
+\paragraph{Parsing and Options}
 \begin{itemize}
-  \item  Parsing and conditional: 
-\end{itemize}
-This package provides the following optional arguments:
-\begin{itemize}
-    \item \Verb|theorems|
+    \item \Verb|xparse| --- Advanced command definition with flexible argument parsing
+    \item \Verb|ifthen| --- Conditional statements and logic
+    \item \Verb|etoolbox| --- Programming facilities and command patching
+    \item \Verb|kvoptions| --- Key-value option handling for package options
 \end{itemize}
 
+\paragraph{Page Layout}
+\begin{itemize}
+    \item \Verb|geometry| --- Page dimensions and margins (0.5in sides, 1.5in bottom)
+    \item \Verb|emptypage| --- Clean formatting for empty pages
+    \item \Verb|fancyhdr| --- Customizable headers and footers
+    \item \Verb|lastpage| --- Reference to the last page number (for formal header)
+\end{itemize}
+
+\paragraph{Text Encoding and Fonts}
+\begin{itemize}
+    \item \Verb|inputenc| (utf8) --- Unicode character input support
+    \item \Verb|fontenc| (T1) --- Font encoding for proper character rendering
+    \item \Verb|times| --- Times Roman font family (when \texttt{timesfont=true})
+    \item \Verb|textcomp| --- Additional text symbols and companion fonts
+    \item \Verb|fontawesome| --- Icon font support for symbols like \faGithub
+\end{itemize}
+
+\paragraph{Mathematics}
+\begin{itemize}
+    \item \Verb|amsmath| --- Enhanced mathematics environments and commands
+    \item \Verb|amsfonts| --- Mathematical fonts including blackboard bold
+    \item \Verb|amsthm| --- Theorem environment support
+    \item \Verb|amssymb| --- Extended mathematical symbols
+    \item \Verb|mathtools| --- Enhancements and fixes for \Verb|amsmath|
+    \item \Verb|mathrsfs| --- Ralph Smith's Formal Script font for math
+    \item \Verb|mathdots| --- Commands for improving the appearance of dots in math
+    \item \Verb|nicefrac| --- Typeset nice diagonal fractions
+    \item \Verb|cancel| --- Cross out mathematical expressions
+    \item \Verb|MnSymbol| --- Additional mathematical symbols
+    \item \Verb|dsfont| --- Doublestroke font for mathematical alphabets
+    \item \Verb|upgreek| --- Upright Greek letters in mathematics
+    \item \Verb|systeme| --- Systems of linear equations formatting
+    \item \Verb|siunitx| --- Consistent SI units and number formatting
+    \item \Verb|pifont| --- Access to Pi fonts for special symbols
+\end{itemize}
+
+\paragraph{Colors and Hyperlinks}
+\begin{itemize}
+    \item \Verb|xcolor| --- Color support with optional \texttt{dvipsnames} palette
+    \item \Verb|hyperref| --- Hyperlinks and PDF metadata with color configuration
+\end{itemize}
+
+\paragraph{Text Formatting}
+\begin{itemize}
+    \item \Verb|soul| --- Letter spacing and highlighting (\Verb|\spaceout| command)
+    \item \Verb|fancyvrb| --- Enhanced verbatim text for inline code
+    \item \Verb|csquotes| --- Context-sensitive quotation marks
+    \item \Verb|enumitem| --- Enhanced control over list environments
+\end{itemize}
+
+\paragraph{Code Listings}
+\begin{itemize}
+    \item \Verb|minted| --- Syntax highlighting using Pygments (when \texttt{code=true})
+\end{itemize}
+
+\paragraph{Tables}
+\begin{itemize}
+    \item \Verb|booktabs| --- Publication-quality table rules
+    \item \Verb|arydshln| --- Dashed lines in tables
+    \item \Verb|multirow| --- Cells spanning multiple rows
+    \item \Verb|multicol| --- Multiple column environments
+\end{itemize}
+
+\paragraph{Floats and Captions}
+\begin{itemize}
+    \item \Verb|float| --- Improved float control with H placement specifier
+    \item \Verb|caption| --- Customizable caption formatting
+    \item \Verb|subcaption| --- Support for subfigures and subtables
+\end{itemize}
+
+\paragraph{Algorithms}
+\begin{itemize}
+    \item \Verb|algorithm| --- Floating environment for algorithms
+    \item \Verb|algpseudocode| --- Pseudocode formatting commands
+\end{itemize}
+
+\paragraph{Graphics and Plotting}
+\begin{itemize}
+    \item \Verb|graphicx| --- Enhanced graphics inclusion
+    \item \Verb|tikz| --- Powerful graphics and diagram creation
+    \item \Verb|pgfplots| --- High-quality function and data plots
+    \item \Verb|multimedia| --- Multimedia content embedding
+\end{itemize}
+
+\paragraph{Additional Utilities}
+\begin{itemize}
+    \item \Verb|pbox| --- Fixed-width paragraph boxes
+    \item \Verb|nameref| --- Reference by section names
+\end{itemize}
+
+\paragraph{Document Structure}
+\begin{itemize}
+    \item \Verb|appendix| --- Appendix formatting and management
+\end{itemize}
+
+\paragraph{Bibliography}
+\begin{itemize}
+    \item \Verb|biblatex| --- Advanced bibliography management with Biber backend
+\end{itemize}
+
+\paragraph{Theorem Environments}
+\begin{itemize}
+    \item \Verb|thmtools| --- Enhanced theorem configuration (when \texttt{theorems=true})
+    \item \Verb|tcolorbox| --- Colored and framed boxes for theorems (when \texttt{theorems=true})
+\end{itemize}
+
+\subsection{Metadata Commands}
+
+The package provides enhanced metadata commands with optional short forms:
+
+\begin{description}
+    \item[\texttt{\textbackslash{}author[short]\{full\}}] Define document author. The optional \texttt{short} form is used in headers.
+    
+    \item[\texttt{\textbackslash{}title[short]\{full\}}] Define document title. The optional \texttt{short} form is used in headers.
+    
+    \item[\texttt{\textbackslash{}purpose\{text\}}] Specify the document's purpose (displayed in formal header).
+    
+    \item[\texttt{\textbackslash{}institute\{text\}}] Specify the institution or affiliation (displayed in formal header).
+\end{description}
+
+Example:
+\begin{latexcode}
+\title[Short Title]{Full Document Title}
+\author[J. Doe]{John Doe}
+\purpose{Technical Report}
+\institute{Department of Computer Science}
+\end{latexcode}
 
 \subsection{Header \& Footer}
 
-The header and footer are set using the \Verb|fancyhdr| package.
-The header contains the section number and title at the center, and the footer contains the page number also at the center.
-The header height is set to 0.5 inches and the margins are set to 0.5 inches on the left and right, and 1 inch at the bottom.
-Footnotes are provided and should be used sparingly. 
-If you do require a footnote, it should be properly typeset after the phrase (and after punctuation marks if there is one.)
-Footnotes are created using the \Verb|\footnote{text}| command. 
-The footnote text is placed at the bottom of the page.\footnote{The footnote text is automatically numbered, formatted and placed at the bottom of the page like this.}
+The package uses the \Verb|fancyhdr| package to create professional headers and footers.
+Two header styles are available, selectable via the \texttt{header} option:
+
+\paragraph{Default Header Style}
+The default style is simple and clean:
+\begin{itemize}
+    \item Header: Section title centered
+    \item Footer: Page number centered
+    \item Header height: 0.75 inches
+\end{itemize}
+
+\paragraph{Formal Header Style}
+The formal style provides comprehensive document information:
+\begin{itemize}
+    \item Left header (top line): Purpose and short title with author
+    \item Left header (bottom line): Institute and page count (``page X of Y'')
+    \item No header rule
+    \item Header height: 0.75 inches
+\end{itemize}
+
+Page margins are configured as 0.5 inches on left and right sides, with 1.5 inches at the bottom.
+Empty pages (in two-sided printing) are automatically cleaned using the \Verb|emptypage| package.
+
+Footnotes should be used sparingly and are created using the \Verb|\footnote{text}| command. 
+The footnote text is automatically numbered, formatted and placed at the bottom of the page.\footnote{The footnote text is automatically numbered, formatted and placed at the bottom of the page like this.}
 
 
-\subsection{Section \& Content}
+\subsection{Document Structure}
 
-The default font size is set to 11pt, and the document class is set to \Verb|article| with two-sided printing.
-The document is divided into sections, and the content can be included from separate files using the \Verb|\addcontent| command.
-The sections are numbered automatically, and the section titles are displayed in boldface.
-The content is organized into directories, with the main content in the \Verb|content| directory and the appendix content in the \Verb|appendix| directory.
-The \Verb|\setdirectory| command is used to specify the directory for the main content, and the \Verb|\setappendix| command is used to specify the directory for the appendix content.
-The \Verb|\addcontent| command is used to include the content from the specified directory.
+The package provides commands for modular document organization:
+
+\begin{description}
+    \item[\texttt{\textbackslash{}setdirectory[path]}] Set the base directory for content files (default: current directory).
+    
+    \item[\texttt{\textbackslash{}setappendix[path]}] Switch to appendix mode and set the directory for appendix files.
+    
+    \item[\texttt{\textbackslash{}addcontent\{filename\}}] Include content from the specified file in the current directory.
+\end{description}
+
+Example usage:
+\begin{latexcode}
+% Include main content
+\setdirectory[content]
+\addcontent{1_introduction}
+\addcontent{2_methodology}
+
+% Include appendices
+\setappendix[appendix]
+\addcontent{1_proofs}
+\addcontent{2_data}
+\end{latexcode}
+
+The default document class is \Verb|article| with 11pt font size and two-sided printing.
+Sections are numbered automatically with hierarchical structure: section, subsection, and subsubsection.
 
 \paragraph{Section} 
-To add a new section, use the \Verb|\section{Section title}| command to create a new section.
-Within the section, you can use the \Verb|\subsection{Subsection title}| command to create subsections.
+Create a new section with \Verb|\section{Section title}|.
+Within sections, use \Verb|\subsection{Subsection title}| for subsections and \Verb|\subsubsection{Subsubsection title}| for deeper nesting.
 
 \paragraph{Paragraph} 
-To add a new paragraph with a title, use the \Verb|\paragraph{Paragraph title}| command.
-The paragraph title is displayed in boldface, and the paragraph text follows the title on the same line after a space.
-To start a new paragraph without a title, simply leave a blank line between the paragraphs.
+Create a titled paragraph with \Verb|\paragraph{Paragraph title}|.
+The paragraph title appears in boldface, with text following on the same line.
+To start a new paragraph without a title, simply leave a blank line.
 
 \subsection{Hyperlink \& Reference}
 
-The \href{https://ctan.org/pkg/hyperref}{\Verb|hyperref|} package is used to create hyperlinks in the document.
-The color box is disabled for the links to ensure that the document is print-friendly.
-A sample usage is as follows: \Verb|\href{link}{text}|.
-Other than the hyperlinks, the other is using the macro \Verb|\ref{name}| to reference the labeled (sub)section, equation, figure, table, algorithm, or theorem-like environment.
-The labeling is done using the \Verb|\label{name}| command, which is placed right after the (sub)section or within the environment.
+The \href{https://ctan.org/pkg/hyperref}{\Verb|hyperref|} package creates clickable hyperlinks in the PDF output.
+All links use the default text color (no colored boxes) for print-friendly documents.
+
+\paragraph{External Links}
+Create hyperlinks with \Verb|\href{url}{text}|, where \texttt{url} is the web address and \texttt{text} is the displayed link text.
+
+\paragraph{Internal References}
+The package provides convenient reference commands for different element types:
+
+\textbf{Standard references:}
+\begin{itemize}
+    \item \Verb|\ref{label}| --- Basic reference to labeled item
+    \item \Verb|\nameref{label}| --- Reference by section name
+    \item \Verb|\pageref{label}| --- Reference to page number
+\end{itemize}
+
+\textbf{Specialized reference commands:}
+\begin{itemize}
+    \item \Verb|\refalg{name}| --- Reference to Algorithm~\texttt{\textbackslash{}ref\{alg:name\}}
+    \item \Verb|\reffig{name}| --- Reference to Figure~\texttt{\textbackslash{}ref\{fig:name\}}
+    \item \Verb|\reftab{name}| --- Reference to Table~\texttt{\textbackslash{}ref\{tab:name\}}
+\end{itemize}
+
+\textbf{Corresponding label commands:}
+\begin{itemize}
+    \item \Verb|\labelalg{name}| --- Equivalent to \Verb|\label{alg:name}|
+    \item \Verb|\labelfig{name}| --- Equivalent to \Verb|\label{fig:name}|
+    \item \Verb|\labeltab{name}| --- Equivalent to \Verb|\label{tab:name}|
+\end{itemize}
+
+When the \texttt{theorems} option is enabled, additional reference commands are available for theorem-like environments (see Section~\ref{sec:theorem-refs}).
 
 \subsection{Citation \& Bibliography}
 
-The \href{https://ctan.org/pkg/biblatex}{\Verb|biblatex|} package is used for managing citations and bibliographies.
-The bibliography file is specified using the \Verb|\addbibresource{filename.bib}| command.
-Citations are created using the \Verb|\autocite{key}| command, where \Verb|key| is the citation key defined in the bibliography file.
-The bibliography is printed at the end of the document using the \Verb|\printbibliography| command.
-The bibliography style is set to APA using the \Verb|style=apa| option when loading the \Verb|biblatex| package.
-The backend for the bibliography is set to Biber using the \Verb|backend=biber| option.
-While the bibtex is more classical, Biber provides more advanced features and better support for modern bibliography styles.
-It is recommended to use Biber for new documents, and this template is set up to use Biber by default.
+The \href{https://ctan.org/pkg/biblatex}{\Verb|biblatex|} package manages citations and bibliographies with the Biber backend.
+Biber provides superior Unicode support, advanced sorting, and better handling of complex bibliography requirements compared to BibTeX.
+
+\paragraph{Setup}
+Specify the bibliography file in the preamble:
+\begin{latexcode}
+\addbibresource{references.bib}
+\end{latexcode}
+
+\paragraph{Citations}
+Create citations using:
+\begin{itemize}
+    \item \Verb|\autocite{key}| --- Context-sensitive citation (recommended)
+    \item \Verb|\cite{key}| --- Standard citation
+    \item \Verb|\textcite{key}| --- Textual citation (e.g., ``Author (2023) shows...'')
+    \item \Verb|\parencite{key}| --- Parenthetical citation
+\end{itemize}
+
+Citations appear with square brackets (e.g., [1]) regardless of the bibliography style.
+
+\paragraph{Bibliography}
+Print the bibliography at the document end:
+\begin{latexcode}
+\printbibliography
+\end{latexcode}
+
+The bibliography style is set via the \texttt{bibstyle} package option (default: \texttt{ieee}).
+Common styles include \texttt{numeric}, \texttt{alphabetic}, \texttt{ieee}, \texttt{apa}, and \texttt{nature}.
