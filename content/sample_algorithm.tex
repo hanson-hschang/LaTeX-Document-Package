@@ -1,17 +1,28 @@
 \begin{algorithm}[t]
-  \caption{Fibonacci Sequence}
+  \caption{Quicksort algorithm}
   \labelalg{sample}
-  \begin{algorithmic}[1] % [1] for line numbering
-    \Require $n \in \mathbb{N}$ \Comment{input: a natural number $n$}
-    \Function{Fibonacci}{$n$}
-      \If{$n \leq 1$} \Comment{base case: return $n$ if $n$ is 0 or 1}
-        \State \Return $n$ 
-      \Else \Comment{recursive case: sum of the two preceding numbers}
-        \State \Return \Call{Fibonacci}{$n-1$} + \Call{Fibonacci}{$n-2$} 
+  \begin{algorithmic}[1] % [1] enables line numbering
+    \Require Array $A[1..n]$ of comparable elements
+    \Ensure Array $A$ sorted in non-decreasing order
+    \Function{QuickSort}{$A, \text{left}, \text{right}$}
+      \If{$\text{left} < \text{right}$}
+        \State $\text{pivotIndex} \gets \Call{Partition}{A, \text{left}, \text{right}}$
+        \State \Call{QuickSort}{$A, \text{left}, \text{pivotIndex} - 1$} \Comment{Sort left subarray}
+        \State \Call{QuickSort}{$A, \text{pivotIndex} + 1, \text{right}$} \Comment{Sort right subarray}
       \EndIf
-      \While{false} \Comment{this is just to illustrate the while loop syntax}
-        \State \textbf{break} \Comment{exit the loop immediately}
-      \EndWhile
+    \EndFunction
+    \State
+    \Function{Partition}{$A, \text{left}, \text{right}$}
+      \State $\text{pivot} \gets A[\text{right}]$ \Comment{Choose last element as pivot}
+      \State $i \gets \text{left} - 1$
+      \For{$j \gets \text{left}$ \textbf{to} $\text{right} - 1$}
+        \If{$A[j] \leq \text{pivot}$}
+          \State $i \gets i + 1$
+          \State \textbf{swap} $A[i]$ and $A[j]$ \Comment{Move smaller elements to left}
+        \EndIf
+      \EndFor
+      \State \textbf{swap} $A[i + 1]$ and $A[\text{right}]$ \Comment{Place pivot in correct position}
+      \State \Return $i + 1$ \Comment{Return pivot index}
     \EndFunction
   \end{algorithmic}
 \end{algorithm}
