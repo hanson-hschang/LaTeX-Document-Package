@@ -112,7 +112,7 @@ for i in range(10):
 \end{multicols}
 
 The \Verb|minted| package supports many languages including Python, C, C++, Java, JavaScript, and more.
-Custom languages can be added using the \Verb|\newminted| command as shown in the package configuration.
+Custom language environments can be added using the \Verb|\newminted| command (see lines 211-235 in \Verb|document.sty| for examples of \Verb|latexcode| and \Verb|pythoncode| configurations).
 
 
 \subsection{Mathematics}
@@ -139,7 +139,7 @@ The package provides extensive symbol support:
 
 \paragraph{Fractions and Units}
 Nice diagonal fractions: $\nicefrac{1}{2}, \nicefrac{a}{b}$ using \Verb|\nicefrac{1}{2}|.
-SI units with \Verb|siunitx|: \SI{299792458}{\meter\per\second}, \SI{1.602e-19}{\coulomb}, \SI{6.626e-34}{\joule\second}.
+SI units with \Verb|siunitx|: \SI{299792458}{\meter\per\second} (speed of light), \SI{1.602e-19}{\coulomb} (elementary charge), \SI{6.626e-34}{\joule\second} (Planck constant).
 
 \paragraph{Systems of Equations}
 The \Verb|systeme| package formats systems elegantly:
