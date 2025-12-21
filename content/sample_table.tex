@@ -1,16 +1,18 @@
 \begin{table}[t]
-  \caption{Sample table}
+  \caption{Performance comparison of sorting algorithms}
   \labeltab{sample}
   \centering
-  \begin{tabular}{lll}
+  \begin{tabular}{lccc}
     \toprule
-    \multicolumn{2}{c}{Part}                   \\
-    \cmidrule(r){1-2}
-    Name     & Description     & Size ($\mu$m) \\
+    Algorithm & Best Case & Average Case & Worst Case \\
     \midrule
-    Dendrite & Input terminal  & $\sim$100     \\
-    Axon     & Output terminal & $\sim$10      \\
-    Soma     & Cell body       & up to $10^6$  \\
+    Bubble Sort    & $O(n)$       & $O(n^2)$      & $O(n^2)$ \\
+    Insertion Sort & $O(n)$       & $O(n^2)$      & $O(n^2)$ \\
+    Selection Sort & $O(n^2)$     & $O(n^2)$      & $O(n^2)$ \\
+    \midrule
+    Merge Sort     & $O(n\log n)$ & $O(n\log n)$  & $O(n\log n)$ \\
+    Quick Sort     & $O(n\log n)$ & $O(n\log n)$  & $O(n^2)$ \\
+    Heap Sort      & $O(n\log n)$ & $O(n\log n)$  & $O(n\log n)$ \\
     \bottomrule
   \end{tabular}
 \end{table}
