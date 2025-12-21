@@ -1,16 +1,19 @@
 \section{Environment}
 
-An \emph{environment} in \LaTeX{} is a section of the document that is formatted in a specific way. 
-This document demonstrates various environments, including the use of scripts, tables, figures, algorithms, and framed environments.
-The basic usage of an environment is shown below.
+An \emph{environment} in \LaTeX{} is a section of the document formatted in a specific way. 
+This document demonstrates various environments, including lists, quotes, code blocks, scripts, tables, figures, algorithms, and framed theorem-like environments.
+The basic syntax of an environment is:
 
 \begin{latexcode}
 \begin{environment}
-  some content included in the environment
+  content included in the environment
 \end{environment}
 \end{latexcode}
 
-Here are some common environments used in \LaTeX{} including \Verb|enumerate|, \Verb|itemize|, and \Verb|displayquote|.
+\subsection{Lists and Quotes}
+
+Common text environments include \Verb|enumerate| (numbered lists), \Verb|itemize| (bulleted lists), and \Verb|displayquote| (block quotations).
+These environments can be customized using the \Verb|enumitem| package for lists and \Verb|csquotes| package for quotations.
 
 \noindent\rule{\linewidth}{0.5pt}
 
@@ -67,127 +70,211 @@ Here are some common environments used in \LaTeX{} including \Verb|enumerate|, \
 
 \subsection{Script}
 
-To include inline script code, the \Verb|fancyvrb| package is used.
-To show \Verb|print("Hello, World!")|, one can use \Verb+\Verb|print("Hello, World!")|+.
-To include block scripts in your document, the \Verb|minted| package is used.
-Here is an example of a \Verb|python| script:
+\paragraph{Inline Code}
+Use the \Verb|fancyvrb| package's \Verb|\Verb| command for inline code.
+For example, \Verb+\Verb|print("Hello, World!")|+ produces \Verb|print("Hello, World!")|.
+The delimiter (typically \texttt{|}) can be any character not appearing in the code.
+
+\paragraph{Code Blocks}
+The \Verb|minted| package provides syntax-highlighted code blocks for various programming languages.
+When the \texttt{code=true} option is enabled, the package pre-configures \Verb|latexcode| and \Verb|pythoncode| environments.
+
+\textbf{Python example:}
 
 \begin{multicols}{2}
-  \begin{minted}{python}
+  \begin{pythoncode}
+def fibonacci(n):
+    """Calculate nth Fibonacci number."""
+    if n <= 1:
+        return n
+    return fibonacci(n-1) + fibonacci(n-2)
 
-def hello_world():
-    print("Hello, World!")
-hello_world()
-  \end{minted}
+# Compute first 10 Fibonacci numbers
+for i in range(10):
+    print(f"F({i}) = {fibonacci(i)}")
+  \end{pythoncode}
 
   \columnbreak{}
   
   \begin{latexcode}
-\begin{minted}{python}
-def hello_world():
-    print("Hello, World!")
-hello_world()
-\end{minted}
+\begin{pythoncode}
+def fibonacci(n):
+    """Calculate nth Fibonacci number."""
+    if n <= 1:
+        return n
+    return fibonacci(n-1) + fibonacci(n-2)
+
+# Compute first 10 Fibonacci numbers
+for i in range(10):
+    print(f"F({i}) = {fibonacci(i)}")
+\end{pythoncode}
   \end{latexcode}
 \end{multicols}
 
+The \Verb|minted| package supports many languages including Python, C, C++, Java, JavaScript, and more.
+Custom languages can be added using the \Verb|\newminted| command as shown in the package configuration.
+
+
+\subsection{Mathematics}
+
+The package includes comprehensive mathematics support through AMS packages and specialized math fonts.
+
+\paragraph{Inline and Display Math}
+Inline math: $E = mc^2$ is typeset with \Verb|$E = mc^2$|.
+Display math uses \Verb|\[...\]| or \Verb|equation| environment:
+\[
+  \int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi}
+\]
+
+\paragraph{Special Symbols and Fonts}
+The package provides extensive symbol support:
+\begin{itemize}
+    \item Blackboard bold: $\mathbb{R}, \mathbb{C}, \mathbb{N}, \mathbb{Z}, \mathbb{Q}$
+    \item Doublestroke: $\mathds{1}, \mathds{R}$
+    \item Calligraphic: $\mathcal{L}, \mathcal{F}, \mathcal{H}$
+    \item Script: $\mathscr{L}, \mathscr{F}, \mathscr{H}$
+    \item Fraktur: $\mathfrak{g}, \mathfrak{h}, \mathfrak{su}$
+    \item Upright Greek: $\uppi, \upmu, \upsigma$
+\end{itemize}
+
+\paragraph{Fractions and Units}
+Nice diagonal fractions: $\nicefrac{1}{2}, \nicefrac{a}{b}$ using \Verb|\nicefrac{1}{2}|.
+SI units with \Verb|siunitx|: \SI{299792458}{\meter\per\second}, \SI{1.602e-19}{\coulomb}, \SI{6.626e-34}{\joule\second}.
+
+\paragraph{Systems of Equations}
+The \Verb|systeme| package formats systems elegantly:
+\[
+  \systeme{
+    x + y + z = 6,
+    2x - y + z = 3,
+    x + 2y - z = 2
+  }
+\]
 
 \subsection{Algorithm}
 
-All algorithms must be presented clearly, concisely, and located at the top of the page.
-(See \refalg{sample}.)
-The \Verb|algorithm| and \href{https://www.ctan.org/pkg/algpseudocodex/}{\Verb|algpseudocode|} packages are used to format algorithms.
+Algorithms should be presented clearly and concisely, typically placed at the top of a page using the \Verb|[t]| placement specifier.
+The \Verb|algorithm| package provides the floating environment, while \href{https://www.ctan.org/pkg/algpseudocodex/}{\Verb|algpseudocode|} provides pseudocode formatting commands.
+See \refalg{sample} for an example.
 
 \addcontent{sample_algorithm}
   
 \subsection{Table}
 
-All tables must be centered, neat, legible and located at the top of the page.
-The table title always appears before the table itself, and must be in lower case (except for first word and proper nouns).
-Note that publication-quality tables \emph{do not contain vertical rules}~\autocite{neurips2023template}. 
-This document template uses the \href{https://www.ctan.org/pkg/booktabs}{\Verb|booktabs|} package, which allows for typesetting high-quality, professional, and publication-ready tables. 
-(See \reftab{sample}.)
+Tables should be centered, legible, and positioned at the top of the page.
+Table captions appear \emph{before} the table content and use sentence case (capitalize only the first word and proper nouns).
+Publication-quality tables avoid vertical rules~\autocite{neurips2023template}. 
+The \href{https://www.ctan.org/pkg/booktabs}{\Verb|booktabs|} package provides professional horizontal rules: \Verb|\toprule|, \Verb|\midrule|, \Verb|\cmidrule|, and \Verb|\bottomrule|.
+Additional packages support dashed lines (\Verb|arydshln|), multi-row cells (\Verb|multirow|), and multi-column layouts (\Verb|multicol|).
+See \reftab{sample} for an example.
 
 \addcontent{sample_table}
 
 \subsection{Figure}
 
-All figures must be centered, neat, legible and located at the top of the page. 
-The figure caption always appears after the figure itself, and should be in lower case (except for first word and proper nouns), and smaller than the main text. 
-The \Verb|caption| and \Verb|subcaption| packages are used to format the figure captions.
-Colored figures are allowed, but it is best for the figure captions and the paper body to be legible if the paper is printed in either black/white or in color.
-(See \reffig{sample}.)
+Figures must be centered, legible, and positioned at the top of the page. 
+Figure captions appear \emph{after} the figure content, using sentence case and a smaller font than the main text. 
+The \Verb|caption| and \Verb|subcaption| packages enable sophisticated caption formatting including subfigures.
+The package supports multiple graphics formats via \Verb|graphicx| and provides TikZ/PGFPlots for creating publication-quality diagrams and plots.
+Colored figures are acceptable when they remain legible in both color and grayscale printing.
+See \reffig{sample} for examples.
 
 \addcontent{sample_figure}
 
 \subsection{Frame}
+\label{sec:theorem-refs}
 
-This document demonstrates the usage of the custom theorem-like environments defined in the \texttt{document.sty} package.
+When the \texttt{theorems=true} option is enabled, the package provides elegant theorem-like environments using \Verb|tcolorbox| with color-coded frames.
+All environments share the same counter (numbered within subsections) and support three arguments: title, label, and content.
 
-\begin{definition}{Sample Definition}{sample}
-  This is an example of a definition environment.
+\begin{definition}{Continuity}{continuity}
+  A function $f: \mathbb{R} \to \mathbb{R}$ is \emph{continuous} at point $x_0$ if for every $\epsilon > 0$, there exists $\delta > 0$ such that $|x - x_0| < \delta$ implies $|f(x) - f(x_0)| < \epsilon$.
 \end{definition}
 
-\begin{assumption}{Sample Assumption}{sample}
-  This is an example of an assumption environment.
+\begin{assumption}{Bounded Domain}{bounded}
+  We assume the domain $\Omega \subset \mathbb{R}^n$ is bounded, connected, and has a piecewise smooth boundary $\partial\Omega$.
 \end{assumption}
 
-\begin{conjecture}{Sample Conjecture}{sample}
-  This is an example of a conjecture environment.
+\begin{conjecture}{Collatz Conjecture}{collatz}
+  For any positive integer $n$, the iterative sequence defined by $a_{i+1} = a_i/2$ if $a_i$ is even, or $a_{i+1} = 3a_i + 1$ if $a_i$ is odd, eventually reaches 1.
 \end{conjecture}
 
-\begin{lemma}{Sample Lemma}{sample}
-  Based on \refdef{sample}.
-  This is an example of a lemma. 
-  It shares the same style as the theorem environment.
+\begin{lemma}{Triangle Inequality}{triangle}
+  Based on \refdef{continuity}, for any $x, y \in \mathbb{R}^n$, we have $\|x + y\| \leq \|x\| + \|y\|$, where $\|\cdot\|$ denotes the Euclidean norm.
 \end{lemma}
 \begin{proof}
-  This is an example of a proof environment. It is used to provide a proof for the lemma.
+  By the Cauchy-Schwarz inequality, $\langle x, y \rangle \leq \|x\|\|y\|$. Then:
+  \[
+    \|x + y\|^2 = \|x\|^2 + 2\langle x, y \rangle + \|y\|^2 \leq \|x\|^2 + 2\|x\|\|y\| + \|y\|^2 = (\|x\| + \|y\|)^2
+  \]
+  Taking square roots of both sides yields the result.
 \end{proof}
 
-\begin{theorem}{Sample Theorem}{sample}
-  This is an example of a theorem environment. 
+\begin{theorem}{Fundamental Theorem of Calculus}{ftc}
+  If $f$ is continuous on $[a, b]$ and $F$ is an antiderivative of $f$ on $[a, b]$, then $\int_a^b f(x)\,dx = F(b) - F(a)$.
 \end{theorem}
-\begin{proof}[Sample Proof]
-  This is an example of a proof for the theorem.
+\begin{proof}[Proof sketch]
+  Define $G(x) = \int_a^x f(t)\,dt$. By continuity of $f$, we have $G'(x) = f(x)$. Since both $F$ and $G$ are antiderivatives of $f$, they differ by a constant: $F(x) = G(x) + C$. Evaluating at $x = a$ gives $C = F(a)$, and at $x = b$ gives the result.
 \end{proof}
 
-\begin{corollary}{Sample Corollary}{sample}
-  This is an example of a corollary. It also shares the same style as the theorem environment.
+\begin{corollary}{Integration by Parts}{parts}
+  If $u$ and $v$ are continuously differentiable functions, then $\int u\,dv = uv - \int v\,du$.
 \end{corollary}
 \begin{proof}
-  This is an example of a proof for the corollary.
+  This follows directly from \refthm{ftc} applied to the product rule: $(uv)' = u'v + uv'$.
 \end{proof}
 
-\begin{proposition}{Sample Proposition}{sample}
-  This is an example of a proposition. It also shares the same style as the theorem environment.
+\begin{proposition}{Derivative of Exponential}{exp-deriv}
+  For the exponential function $e^x$, we have $\frac{d}{dx}e^x = e^x$.
 \end{proposition}
 \begin{proof}
-  This is an example of a proof for the proposition.
+  Using the limit definition:
+  \[
+    \frac{d}{dx}e^x = \lim_{h \to 0} \frac{e^{x+h} - e^x}{h} = e^x \lim_{h \to 0} \frac{e^h - 1}{h} = e^x
+  \]
 \end{proof}
 
-\begin{remark}{Sample Remark}{sample}
-  This is an example of a remark environment.
+\begin{remark}{Uniqueness of Exponential}{exp-unique}
+  The exponential function is the only function (up to scaling) that is its own derivative, making it fundamental in differential equations.
 \end{remark}
 
-\begin{note}{Sample Note}{sample}
-  This is an example of a note environment.
+\begin{note}{Notation Convention}{notation}
+  Throughout this document, we use $\mathbb{N}$ for natural numbers, $\mathbb{Z}$ for integers, $\mathbb{Q}$ for rationals, $\mathbb{R}$ for reals, and $\mathbb{C}$ for complex numbers.
 \end{note}
 
-\begin{example}{Sample Example}{sample}
-  This is an example of an example environment.
+\begin{example}{Computing a Derivative}{derivative-ex}
+  Find the derivative of $f(x) = x^2 \sin(x)$ using the product rule.
 \end{example}
 \begin{solution}
-  This is an example of an solution environment.
+  By the product rule: $f'(x) = (x^2)'\sin(x) + x^2(\sin(x))' = 2x\sin(x) + x^2\cos(x)$.
 \end{solution}
 
-\begin{problem}{Sample Problem}{sample}
-  This is an example of a problem environment.
+\begin{problem}{Optimization Problem}{optimization}
+  A rectangular box with square base must have volume \SI{1000}{\cubic\centi\meter}. Find the dimensions that minimize the surface area.
 \end{problem}
 
-\begin{todo}{Sample ToDo}{sample}
-  This is an example of a ToDo environment.
+\begin{todo}{Future Enhancement}{future}
+  Extend the package to support additional theorem styles and custom color schemes for different document themes.
 \end{todo}
 
 These environments are designed to enhance the readability and organization of mathematical documents. 
 Each environment has a specific purpose and style, making it easier for readers to follow the logical flow of the content.
+
+\paragraph{Reference Commands}
+The package provides convenient reference commands for theorem-like environments:
+\begin{itemize}
+    \item \Verb|\refdef{label}| --- Reference to Definition~\ref{def:label}
+    \item \Verb|\refasm{label}| --- Reference to Assumption~\ref{asm:label}
+    \item \Verb|\refconj{label}| --- Reference to Conjecture~\ref{conj:label}
+    \item \Verb|\reflem{label}| --- Reference to Lemma~\ref{lem:label}
+    \item \Verb|\refthm{label}| --- Reference to Theorem~\ref{thm:label}
+    \item \Verb|\refcor{label}| --- Reference to Corollary~\ref{cor:label}
+    \item \Verb|\refprop{label}| --- Reference to Proposition~\ref{prop:label}
+    \item \Verb|\refremk{label}| --- Reference to Remark~\ref{remk:label}
+    \item \Verb|\refnote{label}| --- Reference to Note~\ref{note:label}
+    \item \Verb|\refex{label}| --- Reference to Example~\ref{ex:label}
+    \item \Verb|\refprob{label}| --- Reference to Problem~\ref{prob:label}
+    \item \Verb|\reftodo{label}| --- Reference to ToDo~\ref{todo:label}
+\end{itemize}
+
+These commands automatically include the environment type (e.g., ``Definition'') and number, creating clear cross-references throughout the document.
