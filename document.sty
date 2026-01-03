@@ -103,6 +103,12 @@
 \pagestyle{fancy}
 \fancyhf{}
 
+\newcommand{\doc@header@none}{%
+  \fancyhead{}
+  \fancyfoot{}
+  \renewcommand{\headrulewidth}{0pt}
+}
+
 % Define the handler for the header option: default
 \newcommand{\doc@header@default}{%
   \fancyhead[C]{\leftmark}
