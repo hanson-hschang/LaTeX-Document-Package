@@ -120,7 +120,17 @@
 \newcommand{\doc@header@formal}{%
   \RequirePackage{lastpage}  % For total page count
   \lhead{
-    \@purpose \hfill \ifdefempty{\@shorttitle}{}{\@shorttitle{} --- }\@shortauthor~~\\
+    \@purpose \hfill 
+    \begingroup
+      \newbool{bothnotempty}
+      \booltrue{bothnotempty}
+      \ifdefempty{\@shorttitle}{\boolfalse{bothnotempty}}{}
+      \ifdefempty{\@shortauthor}{\boolfalse{bothnotempty}}{}
+      \ifdefempty{\@shorttitle}{}{\@shorttitle{}}%
+      \ifbool{bothnotempty}{ --- }{}%
+      \ifdefempty{\@shortauthor}{}{\@shortauthor{}}%
+    \endgroup
+    ~~\\
     \@institute \hfill page {\thepage} of {\pageref*{LastPage}}  
   }
   \setlength{\headheight}{0.75in}
@@ -130,6 +140,9 @@
 % Execute the appropriate handler
 \csname doc@header@\doc@header\endcsname
 
+%% Footnote formatting
+\RequirePackage[hang]{footmisc}
+\setlength{\footnotemargin}{0.5em}
 
 %%=============================================================================
 %% TEXT ENCODING AND FONTS
