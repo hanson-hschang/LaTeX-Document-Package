@@ -1,7 +1,7 @@
 %% document.sty - LaTeX Document Package
 %% Requires LaTeX2e format
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{document}[2025/10/01 Document Package]
+\ProvidesPackage{document}[2026/08/10 Document Package]
 
 
 %%=============================================================================
@@ -29,6 +29,7 @@
 \DeclareBoolOption[true]{code}
 \DeclareBoolOption[false]{draft}
 \DeclareBoolOption[true]{timesfont}
+\DeclareStringOption[colorful]{style}[colorful]
 \DeclareStringOption[default]{header}[default]
 \DeclareStringOption[ieee]{bibstyle}
 
@@ -144,6 +145,7 @@
 \RequirePackage[hang]{footmisc}
 \setlength{\footnotemargin}{0.5em}
 
+
 %%=============================================================================
 %% TEXT ENCODING AND FONTS
 %%=============================================================================
@@ -151,7 +153,6 @@
 %% Character encoding (load early)
 \RequirePackage[utf8]{inputenc}
 \RequirePackage[T1]{fontenc}
-\RequirePackage{calligra} % Package for a handwriting-like font
 \ifdoc@timesfont
   \RequirePackage{times}
 \fi
@@ -159,7 +160,7 @@
 \RequirePackage{fontawesome}    % Needed to add icons
 
 % Define a command for emphasizing text
-\newcommand{\alert}[1]{\textbf{#1}}
+\newcommand{\alert}[1]{{\color{Bittersweet} #1}}
 
 %%=============================================================================
 %% MATHEMATICS
@@ -174,10 +175,12 @@
 \RequirePackage{mathrsfs}
 \RequirePackage{mathdots}
 
+\allowdisplaybreaks % Allow page breaks in multi-line equations
+
 %% Additional math symbols and fonts
 \RequirePackage{nicefrac}
 \RequirePackage{cancel}
-\RequirePackage{MnSymbol}
+% \RequirePackage{MnSymbol}  %% This package causes \int weirdness
 \RequirePackage{dsfont}
 \RequirePackage{upgreek}
 
@@ -186,6 +189,10 @@
 
 %% SI units and number formatting
 \RequirePackage[locale=US]{siunitx}
+\sisetup{
+  inter-unit-product = \ensuremath{{}\cdot{}}, % Use dot between units (m·s)
+  per-mode = symbol, % Use slashes (m/s) instead of negative exponents
+}
 
 %% Special symbols
 \RequirePackage{pifont}
@@ -311,6 +318,8 @@
 \RequirePackage{pgfplots}
 \pgfplotsset{compat=1.18}
 
+\RequirePackage{pgfplotstable}
+
 %% Multimedia
 \RequirePackage{multimedia}
 
@@ -389,32 +398,66 @@
 %% Box Styles
 %%-----------------------------------------------------------------------------
 
-%% Helper macro for declaring box styles with tcolorbox
-%% Some examples: https://liam.page/2016/07/22/using-the-tcolorbox-package-to-create-a-new-theorem-environment/
+%% The appearance of all theorem-like boxes is controlled by the `style`
+%% package option:
+%%
+%%   style=colorful  (default): colored background and left rule
+%%   style=plain:                no background, border, or shaded rule
+
+%% Common plain style: tcolorbox remains invisible so that the environments
+%% remain breakable, while the content appears as ordinary text.
+\tcbset{
+  doc@plainbox/.style={
+    enhanced,
+    breakable,
+    colback=white,
+    colframe=white,
+    boxrule=0pt,
+    leftrule=0pt,
+    rightrule=0pt,
+    toprule=0pt,
+    bottomrule=0pt,
+    sharp corners,
+    left=0pt,
+    right=0pt,
+    fonttitle=\bfseries\upshape,
+    fontupper=\itshape,
+    coltitle=black,
+    attach title to upper={~},
+    separator sign={},
+    description delimiters={(}{)},
+    description font=\mdseries\upshape,
+  },
+%% Common colorful style
+  doc@colorbox/.style={
+    enhanced,
+    breakable,
+    colback=#1!5,
+    colframe=#1,
+    boxrule=-0.01pt,
+    leftrule=2pt,
+    sharp corners,
+    left=2mm,
+    right=2mm,
+    fonttitle=\bfseries\sffamily,
+    coltitle=#1!70!black,
+    attach title to upper={~},
+    separator sign={},
+    description delimiters={(}{)},
+    description font=\mdseries,
+  }
+}
+
+%% Helper macro for declaring theorem box styles.
 \newcommand{\declarecolorbox}[2]{%
-  % #1 = style name, #2 = color
-  \tcbset{
-    #1/.style={
-      enhanced,
-      breakable,
-      colback=#2!5,
-      colframe=#2,
-      boxrule=-0.01pt,
-      leftrule=2pt,
-      sharp corners,
-      left=2mm,
-      right=2mm,
-      fonttitle=\bfseries\sffamily,
-      coltitle=#2!70!black,
-      attach title to upper={~},
-      separator sign={},
-      description delimiters={(}{)},
-      description font=\mdseries, % medium series, i.e. non-bold
-    }
+  \ifdefstring{\doc@style}{plain}{%
+    \tcbset{#1/.style={doc@plainbox}}%
+  }{%
+    \tcbset{#1/.style={doc@colorbox={#2}}}%
   }%
 }
 
-%% Declare colored box styles
+%% Declare theorem box styles.
 \declarecolorbox{thmredbox}{WildStrawberry}
 \declarecolorbox{thmorangebox}{BurntOrange}
 \declarecolorbox{thmyellowbox}{Goldenrod}
@@ -471,27 +514,40 @@
 %%-----------------------------------------------------------------------------
 
 %% Proof tcolorbox style
-\tcbset{
-  proofstyle/.style={
-    enhanced,
-    breakable,
-    colback=RawSienna!2,
-    colframe=RawSienna,
-    boxrule=-0.1pt,
-    leftrule=2pt,
-    sharp corners,
-    left=2mm,
-    right=2mm,
-    fonttitle=\bfseries\sffamily,
-    coltitle=RawSienna!70!black,
-    attach title to upper={\par\noindent},
-  }
+\ifdefstring{\doc@style}{plain}{%
+  \tcbset{
+    proofstyle/.style={
+      doc@plainbox,
+      fontupper=\upshape,
+      fonttitle=\itshape,
+      before skip=0pt,
+      attach title to upper={\quad},
+    }
+  }%
+}{%
+  \tcbset{
+    proofstyle/.style={
+      enhanced,
+      breakable,
+      colback=RawSienna!2,
+      colframe=RawSienna,
+      boxrule=-0.1pt,
+      leftrule=2pt,
+      sharp corners,
+      before skip=0pt,
+      left=2mm,
+      right=2mm,
+      fonttitle=\bfseries\sffamily,
+      coltitle=RawSienna!70!black,
+      attach title to upper={\quad},
+    }
+  }%
 }
 
 %% Custom proof environment
 \renewenvironment{proof}[1][\proofname]{%
   \par\removelastskip\vspace{-\baselineskip+2mm}%
-  \pushQED{\null\hfill\(\blacksquare\)}%
+  \pushQED{\null\hfill\(\square\)}%
   \begin{tcolorbox}[
     proofstyle, 
     title=#1, 
@@ -502,28 +558,40 @@
 }
 
 %% Solution tcolorbox style
-\tcbset{
-  solutionstyle/.style={
-    enhanced,
-    breakable,
-    colback=NavyBlue!2,
-    colframe=NavyBlue,
-    boxrule=-0.01pt,
-    leftrule=2pt,
-    sharp corners, 
-    before skip=0pt,
-    left=2mm,
-    right=2mm,
-    fonttitle=\bfseries\sffamily,
-    coltitle=NavyBlue!70!black,
-    attach title to upper={\par\noindent},
-  }
+\ifdefstring{\doc@style}{plain}{%
+  \tcbset{
+    solutionstyle/.style={
+      doc@plainbox,
+      fontupper=\upshape,
+      fonttitle=\itshape,
+      before skip=0pt,
+      attach title to upper={\quad},
+    }
+  }%
+}{%
+  \tcbset{
+    solutionstyle/.style={
+      enhanced,
+      breakable,
+      colback=NavyBlue!2,
+      colframe=NavyBlue,
+      boxrule=-0.01pt,
+      leftrule=2pt,
+      sharp corners,
+      before skip=0pt,
+      left=2mm,
+      right=2mm,
+      fonttitle=\bfseries\sffamily,
+      coltitle=NavyBlue!70!black,
+      attach title to upper={\quad},
+    }
+  }%
 }
 
 %% Solution environment
 \newenvironment{solution}[1][Solution]{%
   \par\removelastskip\vspace{-\baselineskip+2mm}%
-  \pushQED{\null\hfill\(\square\)}%
+  \pushQED{\null\hfill\(\blacksquare\)}%
   \begin{tcolorbox}[
     solutionstyle, 
     title=#1, 
@@ -543,7 +611,7 @@
 \newcommand{\refremk}[1]{Remark~\ref{remk:#1}}
 \newcommand{\refnote}[1]{Note~\ref{note:#1}}
 \newcommand{\refex}[1]{Example~\ref{ex:#1}}
-\newcommand{\refprob}[1]{Problem~\ref{prop:#1}}
+\newcommand{\refprob}[1]{Problem~\ref{prob:#1}}
 \newcommand{\reftodo}[1]{ToDo~\ref{todo:#1}}
 
 \fi % End of \ifdoc@theorems
