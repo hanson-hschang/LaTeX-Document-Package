@@ -1,7 +1,7 @@
 %% document.sty - LaTeX Document Package
 %% Requires LaTeX2e format
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{document}[2026/08/10 Document Package]
+\ProvidesPackage{document}[2026/09/29 Document Package]
 
 
 %%=============================================================================
@@ -221,6 +221,9 @@
 \RequirePackage{soul}
 \newcommand{\spaceout}[1]{\so{#1}}
 
+%% Underlining and strikethrough with normal emph 
+\RequirePackage[normalem]{ulem}
+
 %% Verbatim text
 \RequirePackage{fancyvrb}
 
@@ -297,6 +300,16 @@
 
 \RequirePackage{algorithm}
 \RequirePackage{algpseudocode}
+
+% Define custom algorithmic keywords
+\algnewcommand\algorithmicparameter{\textbf{Parameter:}}
+\algnewcommand\Parameter{\item[\algorithmicparameter]}
+
+\algnewcommand\algorithmicinput{\textbf{Input:}}
+\algnewcommand\Input{\item[\algorithmicinput]}
+
+\algnewcommand\algorithmicoutput{\textbf{Output:}}
+\algnewcommand\Output{\item[\algorithmicoutput]}
 
 %%=============================================================================
 %% GRAPHICS AND PLOTTING
@@ -467,6 +480,7 @@
 \declarecolorbox{thmpurplebox}{Violet}
 \declarecolorbox{thmbrownbox}{RawSienna}
 \declarecolorbox{thmgraybox}{Gray}
+\declarecolorbox{thmpinkbox}{Fuchsia}
 
 %%-----------------------------------------------------------------------------
 %% Theorem-like Environments
@@ -508,6 +522,9 @@
 
 %% ToDos
 \newtcbtheorem[use counter from=definition]{todo}{ToDo}{thmcyanbox}{todo}
+
+%% Questions
+\newtcbtheorem[use counter from=definition]{question}{Question}{thmpinkbox}{question}
 
 %%-----------------------------------------------------------------------------
 %% Proof and Solution Environments
@@ -613,6 +630,7 @@
 \newcommand{\refex}[1]{Example~\ref{ex:#1}}
 \newcommand{\refprob}[1]{Problem~\ref{prob:#1}}
 \newcommand{\reftodo}[1]{ToDo~\ref{todo:#1}}
+\newcommand{\refquestion}[1]{Question~\ref{question:#1}}
 
 \fi % End of \ifdoc@theorems
 
@@ -624,10 +642,90 @@
 \newcommand{\labelalg}[1]{\label{alg:#1}}
 \newcommand{\labelfig}[1]{\label{fig:#1}}
 \newcommand{\labeltab}[1]{\label{tab:#1}}
+\newcommand{\labeleq}[1]{\label{eq:#1}}
 \newcommand{\refalg}[1]{Algorithm~\ref{alg:#1}}
 \newcommand{\reffig}[1]{Figure~\ref{fig:#1}}
 \newcommand{\reftab}[1]{Table~\ref{tab:#1}}
+\renewcommand{\refeq}[1]{Equation~\eqref{eq:#1}}
 
+%%=============================================================================
+%% CHECKLIST ENVIRONMENT
+%%=============================================================================
+
+% Define symbols
+\newcommand{\checklistdefault}{\ding{111}}
+\newcommand{\checklistempty}{\ding{111}}
+\newcommand{\checklistcheck}{%
+  \ooalign{%
+    \hfil\ding{111}\hfil\cr
+    \hfil\raisebox{0.2em}{\scalebox{0.75}{\ding{51}}}\hfil\cr
+  }%
+}
+\newcommand{\checklistcross}{%
+  \ooalign{%
+    \hfil\ding{111}\hfil\cr
+    \hfil\raisebox{0.2em}{\scalebox{0.75}{\ding{55}}}\hfil\cr
+  }%
+}
+\newcommand{\checklistongoing}{%
+  \ooalign{%
+    \hfil\ding{111}\hfil\cr
+    \hfil\raisebox{0.225em}{\scalebox{0.5}{\!\ding{220}}}\hfil\cr
+  }%
+}
+\newcommand{\checkliststar}{%
+  \ooalign{%
+    \hfil\ding{111}\hfil\cr
+    \hfil\raisebox{0.2em}{\scalebox{0.6}{\!\ding{86}}}\hfil\cr
+  }%
+}
+\newcommand{\checklistquestion}{%
+  \ooalign{%
+    \hfil\ding{111}\hfil\cr
+    \hfil\raisebox{0.225em}{\scalebox{0.5}{\!\textbf{\textsf{?}}}}\hfil\cr
+  }%
+}
+
+
+% Define checklist as an itemize-like environment.
+% Only the label is changed; spacing and margins follow itemize.
+\newlist{checklist}{itemize}{1}
+\setlist[checklist]{
+  label=\checklistempty,
+}
+
+
+% Helper command for individual item states
+
+\ExplSyntaxOn
+
+\AtBeginEnvironment{checklist}
+{
+  \let\originalItem\item
+
+  \RenewDocumentCommand{\item}{o}
+  {
+    \IfNoValueTF{#1}
+    {
+      \originalItem[\checklistempty]
+    }
+    {
+      \str_case:nnF {#1}
+      {
+        {v} {\originalItem[\checklistcheck]}
+        {x} {\originalItem[\checklistcross]}
+        {?} {\originalItem[\checklistquestion]}
+        {>} {\originalItem[\checklistongoing]}
+        {*} {\originalItem[\checkliststar]}
+      }
+      {
+        \originalItem[#1]
+      }
+    }
+  }
+}
+
+\ExplSyntaxOff
 %%=============================================================================
 %% END OF PACKAGE
 %%=============================================================================

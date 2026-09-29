@@ -10,6 +10,9 @@
 \newcommand{\integers}{\mathbb{Z}}
 \newcommand{\naturals}{\mathbb{N}}
 \newcommand{\continuous}{C}
+\newcommand{\bounded}{b}
+\newcommand{\Space}[1]{\!\left(#1\right)}
+\newcommand{\measurableSpace}[1]{\mathcal{M}\!\left(#1\right)}
 \newcommand{\euclideans}{\mathbb{E}}
 \newcommand{\Mat}[1][]{\ifthenelse{\equal{#1}{}}{\textnormal{Mat}}{\textnormal{Mat}(#1)}}
 \newcommand{\SO}[1]{\textnormal{SO}({#1})}
@@ -104,7 +107,7 @@
 \newcommand{\pseudoinverse}{+}
 \newcommand{\conjugate}{*}
 \newcommand{\transpose}{\intercal}
-\newcommand{\conjugatetranspose}{\dagger}
+\newcommand{\dual}{\dagger}
 \newcommand{\Trace}[1]{\textnormal{Tr}\left(#1\right)}
 \newcommand{\diag}[1]{\textnormal{diag}\left\{#1\right\}}
 \newcommand{\inner}[2]{\left\langle #1, #2 \right\rangle}
@@ -176,6 +179,12 @@
   \IfNoValueT{#1}{}
   \left(#2\right)
 }
+\NewDocumentCommand{\Covariance}{o m}{
+  \mathsf{Cov}
+  \IfValueT{#1}{_{#1}}
+  \IfNoValueT{#1}{}
+  \left(#2\right)
+}
 \DeclareMathOperator*{\logsumexp}{logsumexp}
 \newcommand{\KLDivergence}[2]{\textnormal{KL}\left(#1 \| #2\right)}
 \newcommand{\entropy}[1]{\mathsf{H}\left(#1\right)}
@@ -188,7 +197,15 @@
 
 \newcommand{\subjectto}{\textnormal{s.t.}}
 
-\newcommand{\Order}[1]{\mathcal{O}\left(#1\right)}
+\newcommand{\Order}[1]{O\left(#1\right)}
+
+\newcommand{\inline}[1]{%
+  \begingroup
+  \let\left\relax
+  \let\right\relax
+  #1%
+  \endgroup
+}
 
 \newcommand{\mysetminusD}{\hbox{\tikz{\draw[line width=0.6pt,line cap=round] (3pt,0) -- (0,6pt);}}}
 \newcommand{\mysetminusT}{\mysetminusD}
