@@ -31,8 +31,7 @@ jobs:
           git rm -rf .
         fi
 
-        cp ../main/_mathematics.tex .
-        cp ../main/document.sty .
+        cp -r ../main/setup/* .
         
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
