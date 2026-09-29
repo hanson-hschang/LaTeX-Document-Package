@@ -1,0 +1,5 @@
+# Document style and macro files live in setup/.
+ensure_path('TEXINPUTS', '../setup/');
+ensure_path('BIBINPUTS', '../references/');
+$pdf_mode = 1;
+$pdflatex = 'pdflatex -shell-escape -interaction=nonstopmode %O %S';

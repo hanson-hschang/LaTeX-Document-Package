@@ -1,0 +1,27 @@
+% _highlight.tex
+% Macros for visually marking .tex updates between revisions.
+% Usage during an edit:
+%   \diffold{previous statement of Theorem 2}
+%   \diffnew{revised statement of Theorem 2}
+% Before the NEXT edit pass: remove \diffold{...} entirely, and unwrap
+% \diffnew{...} down to its plain content (drop the macro, keep the text).
+
+\definecolor{difnewcolor}{RGB}{0,102,204}   % new/changed content
+\definecolor{difoldcolor}{RGB}{150,150,150} % superseded content
+
+% Declared with +m so a highlighted block may span several paragraphs;
+% \textcolor is short, and a \par inside its argument aborts the run.
+\NewDocumentCommand{\diffnew}{+m}{{\color{difnewcolor}#1}}
+\NewDocumentCommand{\diffold}{+m}{{\color{difoldcolor}\sout{#1}}}
+% Display-math variants: \sout cannot strike a display equation directly, but it
+% strikes a box, so the equation is boxed first.  Use \diffoldmath inside an
+% equation*/align* body for a superseded formula, and \diffoldmathwide when the
+% formula would otherwise overflow the text width.
+\newcommand{\diffoldmath}[1]{%
+  \textcolor{difoldcolor}{\sout{\mbox{\ensuremath{\displaystyle #1}}}}%
+}
+\newcommand{\diffoldmathwide}[1]{%
+  \textcolor{difoldcolor}{%
+    \resizebox{\textwidth}{!}{\sout{\mbox{\ensuremath{\displaystyle #1}}}}%
+  }%
+}

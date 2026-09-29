@@ -1,0 +1,48 @@
+% _lean.tex
+% Provenance macros tying each statement of this document to its Lean 4
+% counterpart in the formalization repository.
+%
+% Usage:
+%   \leanproved{Path/To/File}{\lname{Project.theorem\_eq}, \lname{Project.lemma\_pos}}
+%   \leanstated{Path/To/File}{\lname{Project.definition\_name}}
+%
+% \leanproved marks a statement whose Lean counterpart carries a complete,
+% machine-checked proof.
+% \leanstated marks one that is formalized, and type-checks, with the proof
+% itself still open (a `sorry` in the Lean source).
+% Underscores in Lean identifiers are escaped by hand, so no verbatim
+% machinery is needed inside the theorem boxes.
+
+\definecolor{leanprovedcolor}{RGB}{0,110,70}    % machine-checked
+\definecolor{leanstatedcolor}{RGB}{165,105,0}   % stated, proof open
+
+\newcommand{\lname}[1]{\texttt{#1}}
+\newcommand{\lfile}[1]{\texttt{DualityProofs/#1.lean}}
+
+\NewDocumentCommand{\leanmark}{m m m m}{%
+  \par\vspace{1.2ex}%
+  \noindent{\footnotesize\color{#1}\raggedright
+    #2\quad\lfile{#3}\quad#4\par}%
+}
+\NewDocumentCommand{\leanproved}{m m}{%
+  \leanmark{leanprovedcolor}{$\checkmark$~\textbf{Lean: proved}}{#1}{#2}%
+}
+\NewDocumentCommand{\leanstated}{m m}{%
+  \leanmark{leanstatedcolor}{$\circ$~\textbf{Lean: stated, proof open}}{#1}{#2}%
+}
+% \leantodo marks a statement whose Lean counterpart does not exist yet: the
+% mathematics is settled in this document, but no declaration has been written.
+\definecolor{leantodocolor}{RGB}{140,40,110}
+\NewDocumentCommand{\leantodo}{m}{%
+  \par\vspace{1.2ex}%
+  \noindent{\footnotesize\color{leantodocolor}\raggedright
+    $\varnothing$~\textbf{Lean: not yet formalised}\quad#1\par}%
+}
+% \leanscoped marks commentary that is deliberately outside the formalisation:
+% remarks and notes carry no Lean counterpart by agreement on scope.
+\definecolor{leanscopedcolor}{RGB}{120,120,120}
+\NewDocumentCommand{\leanscoped}{m}{%
+  \par\vspace{1.2ex}%
+  \noindent{\footnotesize\color{leanscopedcolor}\raggedright
+    $-$~\textbf{Lean: outside scope}\quad#1\par}%
+}

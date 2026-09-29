@@ -1,0 +1,44 @@
+\newcommand{\raisedtri}[1]{%
+  % 0.3ex is how high to raise it. 0.7 is the size (70%).
+  % #1 passes the math style (display, text, etc.) so it shrinks in subscripts
+  \raisebox{0.2ex}{\scalebox{0.6}{$#1\vartriangle$}}%
+}
+
+\makeatletter
+\@tfor\letter:=abcdefghijklmnopqrstuvwxyz\do{%
+  % \sf\letter
+  \expandafter\edef\csname sf\letter\endcsname{\noexpand\mathsf{\letter}}%
+  % \rm\letter
+  \expandafter\edef\csname rm\letter\endcsname{\noexpand\mathrm{\letter}}%
+  % \delta\letter
+  \expandafter\edef\csname delta\letter\endcsname{%
+    \noexpand\mathchoice
+      {\noexpand\raisedtri\displaystyle\noexpand\mkern-1mu \letter}%
+      {\noexpand\raisedtri\textstyle\noexpand\mkern-1mu \letter}%
+      {\noexpand\raisedtri\scriptstyle\noexpand\mkern-1mu \letter}%
+      {\noexpand\raisedtri\scriptscriptstyle\noexpand\mkern-1mu \letter}%
+  }%
+}
+\@tfor\letter:=ABCDEFGHIJKLMNOPQRSTUVWXYZ\do{%
+  % \cl\letter
+  \expandafter\edef\csname cl\letter\endcsname{\noexpand\mathcal{\letter}}%
+  % \sf\letter
+  \expandafter\edef\csname sf\letter\endcsname{\noexpand\mathsf{\letter}}%
+  % \bb\letter
+  \expandafter\edef\csname bb\letter\endcsname{\noexpand\mathbb{\letter}}%
+  % \rm\letter
+  \expandafter\edef\csname rm\letter\endcsname{\noexpand\mathrm{\letter}}%
+  % \delta\letter
+  \expandafter\edef\csname delta\letter\endcsname{%
+    \noexpand\mathchoice
+      {\noexpand\raisedtri\displaystyle\noexpand\mkern-1mu \letter}%
+      {\noexpand\raisedtri\textstyle\noexpand\mkern-1mu \letter}%
+      {\noexpand\raisedtri\scriptstyle\noexpand\mkern-1mu \letter}%
+      {\noexpand\raisedtri\scriptscriptstyle\noexpand\mkern-1mu \letter}%
+  }%
+}
+\makeatother
+
+% negative kern that pulls a subscript back toward its base after \overline or \bar,
+% which box the base and drop the italic correction, e.g. \bar{Y}_{\sss t}
+\newcommand{\sss}{\mkern-4.5mu} % slanted subscript spacing
