@@ -1,4 +1,4 @@
-\newcommand{\eqname}[1]{\text{(#1)}\qquad}
+\newcommand{\eqname}[1]{\textnormal{(#1)}\qquad}
 \newcommand{\eqnote}[1]{\tag*{(#1)}}
 
 \newcommand{\composition}{\circ}
@@ -160,30 +160,30 @@
 \newcommand{\ProbabilitySimplex}{\Delta}
 \newcommand{\ProbabilitySpace}[1]{\mathcal{P}(#1)}
 \newcommand{\sigmaAlgebra}[1]{\sigma\left(#1\right)}
-\newcommand{\indicator}[1]{\textbf{1}_{\left\{#1\right\}}}
+\newcommand{\indicator}[1]{\mathbf{1}_{\left\{#1\right\}}}
 \NewDocumentCommand{\Probability}{o m}{
   \mathsf{P}
   \IfValueT{#1}{_{#1}}
   \IfNoValueT{#1}{}
-  \left(#2\right)
+  \!\left(#2\right)
 }
 \NewDocumentCommand{\Expectation}{o m}{
   \mathsf{E}
   \IfValueT{#1}{_{#1}}
   \IfNoValueT{#1}{}
-  \left(#2\right)
+  \!\left(#2\right)
 }
 \NewDocumentCommand{\Variance}{o m}{
   \mathsf{Var}
   \IfValueT{#1}{_{#1}}
   \IfNoValueT{#1}{}
-  \left(#2\right)
+  \!\left(#2\right)
 }
 \NewDocumentCommand{\Covariance}{o m}{
   \mathsf{Cov}
   \IfValueT{#1}{_{#1}}
   \IfNoValueT{#1}{}
-  \left(#2\right)
+  \!\left(#2\right)
 }
 \DeclareMathOperator*{\logsumexp}{logsumexp}
 \newcommand{\KLDivergence}[2]{\textnormal{KL}\left(#1 \| #2\right)}
