@@ -6,6 +6,8 @@
 
 \makeatletter
 \@tfor\letter:=abcdefghijklmnopqrstuvwxyz\do{%
+  % \tt\letter
+  \expandafter\edef\csname tt\letter\endcsname{\noexpand\textnormal{\letter}}%
   % \sf\letter
   \expandafter\edef\csname sf\letter\endcsname{\noexpand\mathsf{\letter}}%
   % \rm\letter
@@ -20,6 +22,8 @@
   }%
 }
 \@tfor\letter:=ABCDEFGHIJKLMNOPQRSTUVWXYZ\do{%
+  % \tt\letter
+  \expandafter\edef\csname tt\letter\endcsname{\noexpand\textnormal{\letter}}%
   % \cl\letter
   \expandafter\edef\csname cl\letter\endcsname{\noexpand\mathcal{\letter}}%
   % \sf\letter

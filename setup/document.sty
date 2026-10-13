@@ -1,7 +1,7 @@
 %% document.sty - LaTeX Document Package
 %% Requires LaTeX2e format
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{document}[2026/09/29 Document Package]
+\ProvidesPackage{document}[2026/10/10 Document Package]
 
 
 %%=============================================================================
@@ -32,6 +32,9 @@
 \DeclareStringOption[colorful]{style}[colorful]
 \DeclareStringOption[default]{header}[default]
 \DeclareStringOption[ieee]{bibstyle}
+\DeclareStringOption[section]{numberbegin}
+\DeclareStringOption[subsection]{numberwithin}
+\DeclareStringOption[dependent]{numbering}
 
 \ProcessKeyvalOptions*
 
@@ -112,7 +115,9 @@
 
 % Define the handler for the header option: default
 \newcommand{\doc@header@default}{%
-  \fancyhead[C]{\leftmark}
+  % Header: the first section that starts on the page, or the running section
+  % if none starts there (\leftmark would show the last section on the page)
+  \fancyhead[C]{\IfFormatAtLeastTF{2022/06/01}{\FirstMark{2e-left}}{\leftmark}}
   \fancyfoot[C]{\thepage}
   \setlength{\headheight}{0.75in}
 }
@@ -153,6 +158,7 @@
 %% Character encoding (load early)
 \RequirePackage[utf8]{inputenc}
 \RequirePackage[T1]{fontenc}
+\RequirePackage{calligra} % Package for a handwriting-like font
 \ifdoc@timesfont
   \RequirePackage{times}
 \fi
@@ -353,6 +359,24 @@
 %% Appendix handling
 \RequirePackage{appendix}
 
+%% Table of contents
+%% The titles option keeps the standard title formatting.
+\RequirePackage[titles]{tocloft}
+\renewcommand{\contentsname}{Table of Contents}
+%% Space before each entry. Because the space comes before every entry of a
+%% level, the gap from a section to its first subsection equals the gap between
+%% two subsections, and likewise for subsubsections.
+\setlength{\cftbeforesubsecskip}{0.4\baselineskip}
+\setlength{\cftbeforesubsubsecskip}{0.2\baselineskip}
+
+%% Abstract (abstract package): title the same size as the section titles and
+%% the Table of Contents title (\Large), body the same size as the regular
+%% text. The centered title, the gap below it (\abstitleskip), and the
+%% indented body keep the package defaults.
+\RequirePackage{abstract}
+\renewcommand{\abstractnamefont}{\normalfont\Large\bfseries}
+\renewcommand{\abstracttextfont}{\normalfont}
+
 %% Content directory management
 \newcommand{\doc@directory}{.}
 
@@ -374,15 +398,55 @@
 %% BIBLIOGRAPHY
 %%=============================================================================
 
-%% Load biblatex if not already loaded
-\@ifpackageloaded{biblatex}{}{%
-  \RequirePackage[backend=biber, style=\doc@bibstyle]{biblatex}
+%% Load biblatex if not already loaded. The bibstyle option takes any biblatex
+%% style (e.g. ieee, apa), or plainnat for the reference list of PMLR/JMLR
+%% papers (natbib with plainnat).
+\ifdefstring{\doc@bibstyle}{plainnat}{%
+  %% plainnat: author-year citations; the entries follow BibTeX's plain style
+  %% (full names, plain titles, year at the end), sorted by name, year, title.
+  \@ifpackageloaded{biblatex}{}{%
+    \RequirePackage[
+      backend=biber,
+      bibstyle=trad-plain,
+      citestyle=authoryear,
+      sorting=nyt,
+      maxcitenames=2,
+      maxbibnames=99,
+      uniquename=false,
+      uniquelist=false,
+    ]{biblatex}
+  }
+  %% Unnumbered list with a hanging indent, as natbib sets it: the second and
+  %% later lines are indented by 1em, and entries are separated by
+  %% \itemsep + \parsep of a first-level list.
+  \defbibenvironment{bibliography}
+    {\list{}{%
+       \setlength{\leftmargin}{\bibhang}%
+       \setlength{\itemindent}{-\leftmargin}%
+       \setlength{\itemsep}{\bibitemsep}%
+       \setlength{\parsep}{\bibparsep}}}
+    {\endlist}
+    {\item}
+  \setlength{\bibhang}{1em}
+  \setlength{\bibparsep}{0pt}
+  {\@listi \global\bibitemsep\itemsep \global\advance\bibitemsep\parsep}
+  %% Comma between name and year in citations, as natbib: (Nordby et al., 2026)
+  \renewcommand*{\nameyeardelim}{\addcomma\space}
+  %% As natbib's list: stretch interword spaces rather than let an unbreakable
+  %% item (e.g. arXiv:1610.01644) run into the margin, and avoid single lines of
+  %% an entry at the top or bottom of a page.
+  \AtBeginBibliography{\sloppy\clubpenalty4000\widowpenalty4000}
+}{%
+  \@ifpackageloaded{biblatex}{}{%
+    \RequirePackage[backend=biber, style=\doc@bibstyle]{biblatex}
+  }
+
+  %% Square brackets for citations
+  \renewcommand*{\mkbibparens}[1]{%
+    \bibopenbracket#1\bibclosebracket%
+  }
 }
 
-%% Square brackets for citations
-\renewcommand*{\mkbibparens}[1]{%
-  \bibopenbracket#1\bibclosebracket%
-}
 
 %%=============================================================================
 %% THEOREM ENVIRONMENTS
@@ -425,12 +489,15 @@
     breakable,
     colback=white,
     colframe=white,
+    interior hidden,
+    frame hidden,
     boxrule=0pt,
     leftrule=0pt,
     rightrule=0pt,
     toprule=0pt,
     bottomrule=0pt,
     sharp corners,
+    boxsep=0pt,
     left=0pt,
     right=0pt,
     fonttitle=\bfseries\upshape,
@@ -487,54 +554,160 @@
 %%-----------------------------------------------------------------------------
 
 
+%% Numbering of the theorem-like environments, set by the package options
+%%   numbering    : dependent   - all environments share one counter (default)
+%%                  independent - each environment has its own counter
+%%   numberbegin  : highest level printed in the number   (default: section)
+%%   numberwithin : level whose new heading resets the counter (default: subsection)
+%% numberbegin and numberwithin accept section, subsection, subsubsection, or none;
+%% if either is none, the environments are numbered 1, 2, 3, ... through the whole document.
+%% Each counter is reset at every level from section down to numberwithin, so it
+%% also restarts at a new section before that section's first subsection.
+\@namedef{doc@level@none}{0}
+\@namedef{doc@level@section}{1}
+\@namedef{doc@level@subsection}{2}
+\@namedef{doc@level@subsubsection}{3}
+\@namedef{doc@levelname@1}{section}
+\@namedef{doc@levelname@2}{subsection}
+\@namedef{doc@levelname@3}{subsubsection}
+
+\newcommand{\doc@getlevel}[2]{% #1: macro to define, #2: option value
+  \ifcsname doc@level@#2\endcsname
+    \edef#1{\csname doc@level@#2\endcsname}%
+  \else
+    \PackageError{document}{Unknown numbering level `#2'}%
+      {Use section, subsection, subsubsection, or none.}%
+    \def#1{0}%
+  \fi
+}
+\doc@getlevel{\doc@numbegin}{\doc@numberbegin}
+\doc@getlevel{\doc@numwithin}{\doc@numberwithin}
+
+\ifnum\doc@numbegin>\doc@numwithin\relax
+  \ifnum\doc@numwithin>0\relax
+    \PackageError{document}{numberbegin=\doc@numberbegin\space is deeper than
+      numberwithin=\doc@numberwithin}%
+      {numberbegin must be the same level as numberwithin or higher.
+       Plain numbers are used instead.}%
+  \fi
+\fi
+
+\ifnum\doc@numbegin=0\relax\def\doc@numwithin{0}\fi
+\ifnum\doc@numbegin>\doc@numwithin\relax\def\doc@numwithin{0}\fi
+
+\ifdefstring{\doc@numbering}{dependent}{}{%
+  \ifdefstring{\doc@numbering}{independent}{}{%
+    \PackageError{document}{Unknown numbering `\doc@numbering'}%
+      {Use dependent or independent. dependent is used instead.}%
+    \def\doc@numbering{dependent}%
+  }%
+}
+
+%% Apply the reset levels and the printed format to the counter of
+%% environment #1
+\newcommand{\doc@setupcounter}[1]{%
+  \ifnum\doc@numwithin=0\relax
+    % Plain numbers
+    \@namedef{thetcb@cnt@#1}{\arabic{tcb@cnt@#1}}%
+  \else
+    % Reset at every level from section down to numberwithin
+    \@tempcnta=\@ne
+    \loop
+      \edef\doc@tmplevel{\csname doc@levelname@\the\@tempcnta\endcsname}%
+      \counterwithin*{tcb@cnt@#1}{\doc@tmplevel}%
+    \ifnum\@tempcnta<\doc@numwithin\relax
+      \advance\@tempcnta\@ne
+    \repeat
+    % Print the levels from numberbegin down to numberwithin
+    \def\doc@numformat{}%
+    \@tempcnta=\doc@numbegin\relax
+    \loop
+      \edef\doc@numformat{\unexpanded\expandafter{\doc@numformat}%
+        \noexpand\arabic{\csname doc@levelname@\the\@tempcnta\endcsname}.}%
+    \ifnum\@tempcnta<\doc@numwithin\relax
+      \advance\@tempcnta\@ne
+    \repeat
+    \expandafter\edef\csname thetcb@cnt@#1\endcsname{%
+      \unexpanded\expandafter{\doc@numformat}\noexpand\arabic{tcb@cnt@#1}}%
+  \fi
+}
+
+%% Declare a theorem-like environment: \doc@newtheorem{name}{Display}{box}{prefix}
+%% Definition always owns a counter; with numbering=dependent the others use it.
+\newcommand{\doc@newtheorem}[4]{%
+  \ifboolexpr{test {\ifdefstring{\doc@numbering}{independent}}
+               or test {\ifstrequal{#1}{definition}}}{%
+    \newtcbtheorem{#1}{#2}{#3}{#4}%
+    \doc@setupcounter{#1}%
+  }{%
+    \newtcbtheorem[use counter from=definition]{#1}{#2}{#3}{#4}%
+  }%
+}
+
 %% Definitions
-\newtcbtheorem[number within=subsection]{definition}{Definition}{thmgreenbox}{def}
+\doc@newtheorem{definition}{Definition}{thmgreenbox}{def}
 
 %% Assumptions
-\newtcbtheorem[use counter from=definition]{assumption}{Assumption}{thmorangebox}{asm}
+\doc@newtheorem{assumption}{Assumption}{thmorangebox}{asm}
 
 %% Conjectures
-\newtcbtheorem[use counter from=definition]{conjecture}{Conjecture}{thmpurplebox}{conj}
+\doc@newtheorem{conjecture}{Conjecture}{thmpurplebox}{conj}
+
+%% Hypotheses
+\doc@newtheorem{hypothesis}{Hypothesis}{thmpurplebox}{hyp}
 
 %% Lemmas
-\newtcbtheorem[use counter from=definition]{lemma}{Lemma}{thmbrownbox}{lem}
+\doc@newtheorem{lemma}{Lemma}{thmbrownbox}{lem}
 
 %% Theorems
-\newtcbtheorem[use counter from=definition]{theorem}{Theorem}{thmbrownbox}{thm}
+\doc@newtheorem{theorem}{Theorem}{thmbrownbox}{thm}
 
 %% Corollaries
-\newtcbtheorem[use counter from=definition]{corollary}{Corollary}{thmbrownbox}{cor}
+\doc@newtheorem{corollary}{Corollary}{thmbrownbox}{cor}
 
 %% Propositions
-\newtcbtheorem[use counter from=definition]{proposition}{Proposition}{thmbrownbox}{prop}
+\doc@newtheorem{proposition}{Proposition}{thmbrownbox}{prop}
 
 %% Remarks
-\newtcbtheorem[use counter from=definition]{remark}{Remark}{thmredbox}{remk}
+\doc@newtheorem{remark}{Remark}{thmredbox}{remk}
+
+%% Goals
+\doc@newtheorem{goal}{Goal}{thmredbox}{goal}
 
 %% Notes
-\newtcbtheorem[use counter from=definition]{note}{Note}{thmyellowbox}{note}
+\doc@newtheorem{note}{Note}{thmyellowbox}{note}
 
 %% Examples
-\newtcbtheorem[use counter from=definition]{example}{Example}{thmbluebox}{ex}
+\doc@newtheorem{example}{Example}{thmbluebox}{ex}
 
 %% Problems
-\newtcbtheorem[use counter from=definition]{problem}{Problem}{thmgraybox}{prob}
+\doc@newtheorem{problem}{Problem}{thmgraybox}{prob}
 
 %% ToDos
-\newtcbtheorem[use counter from=definition]{todo}{ToDo}{thmcyanbox}{todo}
+\doc@newtheorem{todo}{ToDo}{thmcyanbox}{todo}
 
 %% Questions
-\newtcbtheorem[use counter from=definition]{question}{Question}{thmpinkbox}{question}
+\doc@newtheorem{question}{Question}{thmpinkbox}{question}
 
 %%-----------------------------------------------------------------------------
 %% Proof and Solution Environments
 %%-----------------------------------------------------------------------------
+
+%% Vertical space before a proof or solution. The colorful style pulls the box
+%% up to attach it to the preceding box; the plain style keeps the normal gap,
+%% since pulling up would overlap the last line of the preceding environment.
+\ifdefstring{\doc@style}{plain}{%
+  \newcommand{\doc@proofskip}{}%
+}{%
+  \newcommand{\doc@proofskip}{\vspace{-\baselineskip+2mm}}%
+}
 
 %% Proof tcolorbox style
 \ifdefstring{\doc@style}{plain}{%
   \tcbset{
     proofstyle/.style={
       doc@plainbox,
+      top=-0.5\baselineskip,
       fontupper=\upshape,
       fonttitle=\itshape,
       before skip=0pt,
@@ -563,7 +736,7 @@
 
 %% Custom proof environment
 \renewenvironment{proof}[1][\proofname]{%
-  \par\removelastskip\vspace{-\baselineskip+2mm}%
+  \par\removelastskip\doc@proofskip%
   \pushQED{\null\hfill\(\square\)}%
   \begin{tcolorbox}[
     proofstyle, 
@@ -579,6 +752,7 @@
   \tcbset{
     solutionstyle/.style={
       doc@plainbox,
+      top=-0.5\baselineskip,
       fontupper=\upshape,
       fonttitle=\itshape,
       before skip=0pt,
@@ -607,7 +781,7 @@
 
 %% Solution environment
 \newenvironment{solution}[1][Solution]{%
-  \par\removelastskip\vspace{-\baselineskip+2mm}%
+  \par\removelastskip\doc@proofskip%
   \pushQED{\null\hfill\(\blacksquare\)}%
   \begin{tcolorbox}[
     solutionstyle, 
@@ -621,11 +795,13 @@
 \newcommand{\refdef}[1]{Definition~\ref{def:#1}}
 \newcommand{\refasm}[1]{Assumption~\ref{asm:#1}}
 \newcommand{\refconj}[1]{Conjecture~\ref{conj:#1}}
+\newcommand{\refhyp}[1]{Hypothesis~\ref{hyp:#1}}
 \newcommand{\reflem}[1]{Lemma~\ref{lem:#1}}
 \newcommand{\refthm}[1]{Theorem~\ref{thm:#1}}
 \newcommand{\refcor}[1]{Corollary~\ref{cor:#1}}
 \newcommand{\refprop}[1]{Proposition~\ref{prop:#1}}
 \newcommand{\refremk}[1]{Remark~\ref{remk:#1}}
+\newcommand{\refgoal}[1]{Goal~\ref{goal:#1}}
 \newcommand{\refnote}[1]{Note~\ref{note:#1}}
 \newcommand{\refex}[1]{Example~\ref{ex:#1}}
 \newcommand{\refprob}[1]{Problem~\ref{prob:#1}}
@@ -639,10 +815,12 @@
 %%=============================================================================
 
 %% Quick label and reference command
+\newcommand{\labelsec}[1]{\label{sec:#1}}
 \newcommand{\labelalg}[1]{\label{alg:#1}}
 \newcommand{\labelfig}[1]{\label{fig:#1}}
 \newcommand{\labeltab}[1]{\label{tab:#1}}
 \newcommand{\labeleq}[1]{\label{eq:#1}}
+\newcommand{\refsec}[1]{Section~\ref{sec:#1}}
 \newcommand{\refalg}[1]{Algorithm~\ref{alg:#1}}
 \newcommand{\reffig}[1]{Figure~\ref{fig:#1}}
 \newcommand{\reftab}[1]{Table~\ref{tab:#1}}
