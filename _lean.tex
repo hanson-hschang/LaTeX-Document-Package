@@ -1,6 +1,13 @@
 % _lean.tex
 % Provenance macros tying each statement of this document to its Lean 4
-% counterpart in the formalization repository.
+% counterpart in a Lean library.
+%
+% Library name: \lfile prints paths as <library>/<File>.lean. Set the name
+% once per document, either before \input{_lean.tex} with
+%   \newcommand{\leanlibrary}{MyProofs}
+% or after it with
+%   \renewcommand{\leanlibrary}{MyProofs}
+% The default is Proofs.
 %
 % Usage:
 %   \leanproved{Path/To/File}{\lname{Project.theorem\_eq}, \lname{Project.lemma\_pos}}
@@ -17,7 +24,8 @@
 \definecolor{leanstatedcolor}{RGB}{165,105,0}   % stated, proof open
 
 \newcommand{\lname}[1]{\texttt{#1}}
-\newcommand{\lfile}[1]{\texttt{DualityProofs/#1.lean}}
+\providecommand{\leanlibrary}{Proofs}
+\newcommand{\lfile}[1]{\texttt{\leanlibrary/#1.lean}}
 
 \NewDocumentCommand{\leanmark}{m m m m}{%
   \par\vspace{1.2ex}%
