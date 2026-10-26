@@ -481,6 +481,19 @@
 %%   style=colorful  (default): colored background and left rule
 %%   style=plain:                no background, border, or shaded rule
 
+%% True right after a theorem-like, proof or solution box and false once a
+%% paragraph begins. A proof or solution attaches to the box above it only
+%% while the flag is true, so a line set between the two boxes (a sentence of
+%% text, a Lean provenance mark) is never overlapped. Formats older than
+%% 2021/06/01 lack the paragraph hook; the flag then stays true and every proof
+%% attaches, as before.
+\newif\ifdoc@afterbox
+\IfFormatAtLeastTF{2021/06/01}{%
+  \AddToHook{para/begin}{\global\doc@afterboxfalse}%
+}{%
+  \global\doc@afterboxtrue
+}
+
 %% Common plain style: tcolorbox remains invisible so that the environments
 %% remain breakable, while the content appears as ordinary text.
 \tcbset{
@@ -507,6 +520,7 @@
     separator sign={},
     description delimiters={(}{)},
     description font=\mdseries\upshape,
+    after app={\global\doc@afterboxtrue},
   },
 %% Common colorful style
   doc@colorbox/.style={
@@ -525,6 +539,7 @@
     separator sign={},
     description delimiters={(}{)},
     description font=\mdseries,
+    after app={\global\doc@afterboxtrue},
   }
 }
 
@@ -694,12 +709,19 @@
 %%-----------------------------------------------------------------------------
 
 %% Vertical space before a proof or solution. The colorful style pulls the box
-%% up to attach it to the preceding box; the plain style keeps the normal gap,
-%% since pulling up would overlap the last line of the preceding environment.
+%% up to attach it to the preceding box when it follows one directly (see
+%% \ifdoc@afterbox), and otherwise leaves a small gap below the preceding line,
+%% since pulling up would overlap that line; the plain style keeps the normal gap.
 \ifdefstring{\doc@style}{plain}{%
-  \newcommand{\doc@proofskip}{}%
+  \newcommand{\doc@proofskip}{\removelastskip}%
 }{%
-  \newcommand{\doc@proofskip}{\vspace{-\baselineskip+2mm}}%
+  \newcommand{\doc@proofskip}{%
+    \ifdoc@afterbox
+      \removelastskip\vspace{-\baselineskip+2mm}%
+    \else
+      \vspace{2mm}%
+    \fi
+  }%
 }
 
 %% Proof tcolorbox style
@@ -730,13 +752,14 @@
       fonttitle=\bfseries\sffamily,
       coltitle=RawSienna!70!black,
       attach title to upper={\quad},
+      after app={\global\doc@afterboxtrue},
     }
   }%
 }
 
 %% Custom proof environment
 \renewenvironment{proof}[1][\proofname]{%
-  \par\removelastskip\doc@proofskip%
+  \par\doc@proofskip%
   \pushQED{\null\hfill\(\square\)}%
   \begin{tcolorbox}[
     proofstyle, 
@@ -775,13 +798,14 @@
       fonttitle=\bfseries\sffamily,
       coltitle=NavyBlue!70!black,
       attach title to upper={\quad},
+      after app={\global\doc@afterboxtrue},
     }
   }%
 }
 
 %% Solution environment
 \newenvironment{solution}[1][Solution]{%
-  \par\removelastskip\doc@proofskip%
+  \par\doc@proofskip%
   \pushQED{\null\hfill\(\blacksquare\)}%
   \begin{tcolorbox}[
     solutionstyle, 
