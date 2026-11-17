@@ -1,11 +1,15 @@
 \newcommand{\raisedtri}[1]{%
   % 0.3ex is how high to raise it. 0.7 is the size (70%).
   % #1 passes the math style (display, text, etc.) so it shrinks in subscripts
-  \raisebox{0.2ex}{\scalebox{0.6}{$#1\vartriangle$}}%
+  \raisebox{0.2ex}{\scalebox{0.8}{$#1\vartriangle$}}%
 }
 
 \makeatletter
 \@tfor\letter:=abcdefghijklmnopqrstuvwxyz\do{%
+  % \fk\letter
+  \expandafter\edef\csname fk\letter\endcsname{\noexpand\mathfrak{\letter}}%
+  % \bf\letter
+  \expandafter\edef\csname bf\letter\endcsname{\noexpand\mathbf{\letter}}%
   % \tt\letter
   \expandafter\edef\csname tt\letter\endcsname{\noexpand\textnormal{\letter}}%
   % \sf\letter
@@ -22,6 +26,10 @@
   }%
 }
 \@tfor\letter:=ABCDEFGHIJKLMNOPQRSTUVWXYZ\do{%
+  % \fk\letter
+  \expandafter\edef\csname fk\letter\endcsname{\noexpand\mathfrak{\letter}}%
+  % \bf\letter
+  \expandafter\edef\csname bf\letter\endcsname{\noexpand\mathbf{\letter}}%
   % \tt\letter
   \expandafter\edef\csname tt\letter\endcsname{\noexpand\textnormal{\letter}}%
   % \cl\letter

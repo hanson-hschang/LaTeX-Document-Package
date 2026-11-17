@@ -31,7 +31,7 @@
 \DeclareBoolOption[true]{timesfont}
 \DeclareStringOption[colorful]{style}[colorful]
 \DeclareStringOption[default]{header}[default]
-\DeclareStringOption[ieee]{bibstyle}
+\DeclareStringOption[plainnat]{bibstyle}
 \DeclareStringOption[section]{numberbegin}
 \DeclareStringOption[subsection]{numberwithin}
 \DeclareStringOption[dependent]{numbering}
@@ -84,12 +84,16 @@
 % Define \purpose command
 \newcommand{\purpose}[1]{%
   \gdef\@purpose{#1}%
+  \newcommand{\thepurpose}{\@purpose}
 }
 
 % Define \institute command
 \newcommand{\institute}[1]{%
   \gdef\@institute{#1}%
+  \newcommand{\theinstitute}{\@institute}
 }
+
+\RequirePackage{titling}    % provides \thetitle, \theauthor, \thedate
 
 %%=============================================================================
 %% PAGE LAYOUT
@@ -384,10 +388,115 @@
   \renewcommand{\doc@directory}{#1}%
 }
 
+%% Appendix: section-page numbering (A-1, A-2, B-1, ...). Each appendix
+%% section is numbered from the page where it starts, and a page where a new
+%% appendix section starts takes that section's letter. The appendix itself
+%% starts on a new page; its sections do not.
+%%
+%% TeX may read the start of the next section before the current page is
+%% output, so the letter cannot be taken from the section counter at that time.
+%% Instead, as with \label/\pageref, each appendix section records the
+%% (absolute) page it starts on in the .aux file, and \thepage is computed from
+%% those records; a change in them asks for a rerun ("Label(s) may have
+%% changed"). The page counter itself keeps running, so every page stays unique.
+\newif\ifdoc@inappendix
+\newif\ifdoc@apx@endread
+\AtEndDocument{\global\doc@apx@endreadtrue}
+%% .aux record: \doc@apxstart{<section number>}{<absolute page>}. Read at
+%% \begin{document} to define the start pages, and again at \end{document} to
+%% detect changes.
+\newcommand{\doc@apxstart}[2]{%
+  \ifdoc@apx@endread
+    \ifcsname doc@apx@start@#1\endcsname
+      \ifnum\csname doc@apx@start@#1\endcsname=#2\relax\else\@tempswatrue\fi
+    \else
+      \@tempswatrue
+    \fi
+  \else
+    \expandafter\xdef\csname doc@apx@start@#1\endcsname{#2}%
+  \fi
+}
+%% Called at every numbered heading, after the heading has been typeset;
+%% records the start page of an appendix section (level 1). The \write is
+%% expanded when its page is output.
+\newcommand{\doc@apx@abspage}{\number\c@page}
+\newcommand{\doc@appendixsection}[1]{%
+  \ifdoc@inappendix
+    \ifnum#1=\@ne
+      %% The section number is expanded now; the page number only when the
+      %% page is output (\protected@write expands its text at once, so
+      %% \doc@apx@abspage is kept as \relax until then).
+      \begingroup
+        \edef\x{\endgroup
+          \noexpand\protected@write\noexpand\@auxout
+            {\let\noexpand\doc@apx@abspage\relax}{%
+            \noexpand\string\noexpand\doc@apxstart
+            {\number\c@section}{\noexpand\doc@apx@abspage}}}%
+      \x
+    \fi
+  \fi
+}
+%% \@sect typesets numbered sectioning headings; its #2 is the level
+%% (1: section). hyperref and nameref (loaded above) wrap the class's \@sect,
+%% which ends up as \NR@sect; whichever of \NR@sect, \H@old@sect, \@sect
+%% contains \@xsect{#5} is patched. The record goes just before \@xsect,
+%% i.e. right after the heading's line, its header mark, and its table-of-
+%% contents entry, where no page break can fall; recorded before the heading,
+%% it could stay on the previous page when the heading moves to the next one.
+%% (The patches are issued at the top level: etoolbox cannot apply a patch
+%% containing # from inside another macro. Only the layer holding \@xsect{#5}
+%% matches; the others, or undefined ones, fail silently.)
+\newif\ifdoc@sectpatched
+\patchcmd{\NR@sect}{\@xsect{#5}}{\doc@appendixsection{#2}\@xsect{#5}}%
+  {\doc@sectpatchedtrue}{}
+\patchcmd{\H@old@sect}{\@xsect{#5}}{\doc@appendixsection{#2}\@xsect{#5}}%
+  {\doc@sectpatchedtrue}{}
+\patchcmd{\@sect}{\@xsect{#5}}{\doc@appendixsection{#2}\@xsect{#5}}%
+  {\doc@sectpatchedtrue}{}
+\ifdoc@sectpatched\else
+  \PackageWarning{document}{Could not set appendix page numbering}
+\fi
+%% \thepage in the appendix (expandable): find the last section n that starts
+%% on or before this page, and print <letter of n>-<pages since its start + 1>.
+%% Section 1 (A) counts from the first appendix page.
+\def\doc@apx@find#1{%
+  \ifcsname doc@apx@start@\number\numexpr#1+1\endcsname
+    \expandafter\@firstoftwo
+  \else
+    \expandafter\@secondoftwo
+  \fi
+  {\doc@apx@cmp{#1}}%
+  {\doc@apx@out{#1}}%
+}
+\def\doc@apx@cmp#1{%
+  \ifnum\c@page<\csname doc@apx@start@\number\numexpr#1+1\endcsname\relax
+    \expandafter\@firstoftwo
+  \else
+    \expandafter\@secondoftwo
+  \fi
+  {\doc@apx@out{#1}}%
+  {\expandafter\doc@apx@find\expandafter{\number\numexpr#1+1}}%
+}
+\def\doc@apx@out#1{%
+  \@Alph{#1}-\number\numexpr\c@page-%
+    \ifnum#1=\@ne\doc@apx@base\else\csname doc@apx@start@#1\endcsname\fi+1\relax
+}
+
 \NewDocumentCommand{\setappendix}{O{.}}{%
   \renewcommand{\doc@directory}{#1}%
+  \clearpage
   \appendix%
+  \xdef\doc@apx@base{\the\c@page}%
+  \renewcommand{\thepage}{\doc@apx@find{1}}%
+  \global\doc@inappendixtrue
+  %% In an article, \appendixpage sets an empty header mark (\markboth{}{}),
+  %% which would blank the header of the first appendix page; skip that mark
+  %% so the page is headed by its first appendix section. (Not in a group:
+  %% \appendixpage's \@afterheading must stay in effect.)
+  \let\doc@markboth\markboth
+  \let\markboth\@gobbletwo
   \appendixpage{}%
+  \let\markboth\doc@markboth
 }
 
 \newcommand{\addcontent}[1]{%
@@ -447,6 +556,40 @@
   }
 }
 
+
+%%=============================================================================
+%% NUMBERING STATE (used by the theorem environments and \setnumbering)
+%%=============================================================================
+
+%% Theorem-like environments and their counters, registered as they are
+%% declared; \setnumbering resets and restores them.
+\ExplSyntaxOn
+\clist_new:N \g__doc_num_thmenvs_clist
+\clist_new:N \g__doc_num_thmcounters_clist
+\cs_new_protected:Npn \doc@registertheorem #1
+  {
+    % stored as a string, to match key names given to \setnumbering
+    \clist_gput_right:Nx \g__doc_num_thmenvs_clist { \tl_to_str:n {#1} }
+    \clist_gput_right:Nx \g__doc_num_thmcounters_clist
+      { \exp_args:Nv \tl_to_str:n { tcb@cnt@#1 } }
+    \clist_gremove_duplicates:N \g__doc_num_thmcounters_clist
+  }
+\ExplSyntaxOff
+
+%% Section-level parts of a theorem number (expandable, so they work in \label
+%% and \ref). While \setnumbering is in effect, the section part is the one
+%% given to it; the subsection parts are always the (real) subsection and
+%% subsubsection counters, which \setnumbering sets and later restores.
+\newif\ifdoc@fakenum
+\newcounter{doc@fakesection}
+\def\doc@numpart#1{%
+  \csname doc@\ifdoc@fakenum fake\else real\fi part@#1\endcsname}
+\def\doc@realpart@section{\thesection}
+\def\doc@realpart@subsection{\arabic{subsection}}
+\def\doc@realpart@subsubsection{\arabic{subsubsection}}
+\def\doc@fakepart@section{\number\value{doc@fakesection}}
+\def\doc@fakepart@subsection{\arabic{subsection}}
+\def\doc@fakepart@subsubsection{\arabic{subsubsection}}
 
 %%=============================================================================
 %% THEOREM ENVIRONMENTS
@@ -638,12 +781,17 @@
     \@tempcnta=\doc@numbegin\relax
     \loop
       \edef\doc@numformat{\unexpanded\expandafter{\doc@numformat}%
-        \noexpand\arabic{\csname doc@levelname@\the\@tempcnta\endcsname}.}%
+        \noexpand\doc@numpart{\csname doc@levelname@\the\@tempcnta\endcsname}.}%
     \ifnum\@tempcnta<\doc@numwithin\relax
       \advance\@tempcnta\@ne
     \repeat
     \expandafter\edef\csname thetcb@cnt@#1\endcsname{%
       \unexpanded\expandafter{\doc@numformat}\noexpand\arabic{tcb@cnt@#1}}%
+    % hyperref link name: unique per numberwithin level (the counter restarts
+    % there), e.g. <section link name>.<n>, not just <n>
+    \expandafter\edef\csname theHtcb@cnt@#1\endcsname{%
+      \noexpand\csname theH\csname doc@levelname@\doc@numwithin\endcsname
+      \noexpand\endcsname.\noexpand\arabic{tcb@cnt@#1}}%
   \fi
 }
 
@@ -657,6 +805,7 @@
   }{%
     \newtcbtheorem[use counter from=definition]{#1}{#2}{#3}{#4}%
   }%
+  \doc@registertheorem{#1}%
 }
 
 %% Definitions
@@ -703,6 +852,34 @@
 
 %% Questions
 \doc@newtheorem{question}{Question}{thmpinkbox}{question}
+
+%% Fixed number for one theorem-like box, given among the box options:
+%%   \begin{proposition}[number=2.1.1]{Title}{label}
+%% The box shows 2.1.1 in its title and in \ref, and does not advance the
+%% counter, so the automatic numbers of the other boxes continue as if it
+%% were not there. Everything stays local to the box.
+%%
+%% A theorem box reads the user's options first and sets up its counter
+%% afterwards (\letcs\tcbcounter{...}, \letcs\thetcbcounter{...},
+%% \stepcounter{\tcbcounter}). The key therefore intercepts that one
+%% \stepcounter of the box's own counter: instead of stepping, it sets the
+%% fixed number. Any other \stepcounter passes through unchanged.
+\tcbset{
+  number/.code={%
+    \let\doc@tcb@stepcounter\stepcounter
+    \def\stepcounter##1{%
+      \edef\doc@tcb@arg{##1}% the box passes \tcbcounter itself
+      \ifx\doc@tcb@arg\tcbcounter
+        \let\stepcounter\doc@tcb@stepcounter
+        \expandafter\def\csname the\doc@tcb@arg\endcsname{#1}%
+        \expandafter\def\csname theH\doc@tcb@arg\endcsname{fixed.#1}%
+        \def\thetcbcounter{#1}%
+      \else
+        \doc@tcb@stepcounter{##1}%
+      \fi
+    }%
+  },
+}
 
 %%-----------------------------------------------------------------------------
 %% Proof and Solution Environments
@@ -816,6 +993,24 @@
   \end{tcolorbox}%
 }
 
+%% Step heading inside a proof or solution, e.g. \step{\ref{item:part-one}} or
+%% \step{Upper bound}. A step always starts a new paragraph, preceded by a
+%% \smallskip, whether or not a blank line precedes it in the source.
+%% The label is a run-in heading, like \paragraph (1em of space before the
+%% text that follows), but with the \smallskip instead of \paragraph's space
+%% above; it adds no table-of-contents entry or header mark.
+%% style=plain: the label is italic, like \emph.
+%% style=colorful: the label is bold, like \paragraph.
+\ifdefstring{\doc@style}{plain}{%
+  \newcommand{\doc@stepfont}{\itshape}%
+}{%
+  \newcommand{\doc@stepfont}{\bfseries}%
+}
+\NewDocumentCommand{\step}{m}{%
+  \par\smallskip
+  \@startsection{paragraph}{4}{\z@}{\z@}{-1em}%
+    {\normalfont\normalsize\doc@stepfont}*{#1}}
+
 \newcommand{\refdef}[1]{Definition~\ref{def:#1}}
 \newcommand{\refasm}[1]{Assumption~\ref{asm:#1}}
 \newcommand{\refconj}[1]{Conjecture~\ref{conj:#1}}
@@ -833,6 +1028,296 @@
 \newcommand{\refquestion}[1]{Question~\ref{question:#1}}
 
 \fi % End of \ifdoc@theorems
+
+%%=============================================================================
+%% \setnumbering: NUMBER AS IN ANOTHER DOCUMENT
+%%=============================================================================
+
+%% \setnumbering[<key>=<value>, ...] numbers what follows as if it were in a
+%% given section of another document (e.g. a paper being rewritten):
+%%   \setnumbering[section=3]
+%% means "we are now in Section 3": equations (3.1), (3.2), ..., the next
+%% \subsection is 3.1, and boxes after it are Lemma 3.1.1, Remark 3.1.1, ...
+%% The numbering then runs on like LaTeX's own: the next \section is
+%% Section 4, with (4.1), 4.1, Lemma 4.1.1, ..., until \setnumbering[reset].
+%% Keys (all optional):
+%%   section, subsection, subsubsection
+%%       the section we are in, as LaTeX's counters hold it: section=3,
+%%       subsection=1 means "in 3.1" (boxes 3.1.n; a following \subsection is
+%%       3.2). Giving a level resets the levels below it to 0, as LaTeX does;
+%%       giving section also restarts the equations, and giving a level the
+%%       theorem-like boxes are numbered within (option numberwithin) restarts
+%%       the boxes. Real \section, \subsection and \subsubsection headings then
+%%       step and print these numbers (e.g. 4, 3.1), in the text, the table of
+%%       contents, and the running header.
+%%   equation, <theorem-like environment> (lemma, remark, ...), <any LaTeX
+%%   counter> (figure, table, ...)
+%%       the number of the next item ("start at"); stored as LaTeX does, i.e.
+%%       the counter is set to <value> - 1 and stepped by the next item.
+%%   reset
+%%       return to the document's real numbering: section, equation and box
+%%       numbers are real again, and counters changed by \setnumbering get
+%%       their real values back (counters that restart with each section, such
+%%       as subsection and the boxes, only if no real \section came in between).
+%%       Only reset ends the numbering set by \setnumbering.
+%% The real section counter keeps running underneath, so appendix page
+%% numbers (A-1, ...) and the real section letters that follow a reset are
+%% unaffected. Settings are global, like \setcounter. Items numbered this way
+%% get their own hyperref link targets, so they cannot collide with real ones.
+\ExplSyntaxOn
+\tl_new:N \l__doc_num_section_tl
+\tl_new:N \l__doc_num_subsection_tl
+\tl_new:N \l__doc_num_subsubsection_tl
+\bool_new:N \l__doc_num_reset_bool
+\prop_new:N \l__doc_num_keys_prop
+\prop_new:N \l__doc_num_counters_prop
+\prop_new:N \g__doc_num_saved_prop
+\tl_new:N \l__doc_num_counter_tl
+\tl_new:N \g__doc_num_realsection_tl
+
+\msg_new:nnn { document } { setnumbering-unknown-key }
+  {
+    Unknown~key~'#1'~in~\token_to_str:N \setnumbering.~
+    Valid~keys:~section,~subsection,~subsubsection,~reset,~equation,~
+    a~theorem-like~environment~(lemma,~remark,~...),~
+    or~any~LaTeX~counter~(figure,~table,~...).
+  }
+\msg_new:nnn { document } { setnumbering-no-section }
+  {
+    '#1'~in~\token_to_str:N \setnumbering\ needs~a~section:~give~
+    section=...~as~well~(or~earlier).
+  }
+\msg_new:nnn { document } { setnumbering-shared-counter }
+  {
+    With~numbering=dependent,~'#1'~shares~one~counter~with~all~
+    theorem-like~environments,~so~#1=...~in~\token_to_str:N \setnumbering\
+    also~moves~the~others.
+  }
+
+\keys_define:nn { document / setnumbering }
+  {
+    section       .tl_set:N   = \l__doc_num_section_tl ,
+    subsection    .tl_set:N   = \l__doc_num_subsection_tl ,
+    subsubsection .tl_set:N   = \l__doc_num_subsubsection_tl ,
+    reset         .bool_set:N = \l__doc_num_reset_bool ,
+    reset         .default:n  = true ,
+    unknown       .code:n     =
+      \prop_put:NVn \l__doc_num_keys_prop \l_keys_key_str {#1} ,
+  }
+
+%% Remember the real value of a counter (once), so reset can restore it.
+\cs_new_protected:Npn \__doc_num_save:n #1
+  {
+    \prop_if_in:NnF \g__doc_num_saved_prop {#1}
+      { \prop_gput:Nnx \g__doc_num_saved_prop {#1} { \int_use:c { c@#1 } } }
+  }
+%% Give counter #1 its own link targets while the numbering is in effect.
+\cs_new_protected:Npn \__doc_num_fake_theH:n #1
+  {
+    \cs_if_exist:cF { doc@real@theH#1 }
+      { \cs_gset_eq:cc { doc@real@theH#1 } { theH#1 } }
+    \cs_gset:cpn { theH#1 }
+      { \cs_if_exist_use:c { theHsection } .setnumbering. \use:c { the#1 } }
+  }
+\cs_new_protected:Npn \__doc_num_real_theH:n #1
+  {
+    \cs_if_exist:cT { doc@real@theH#1 }
+      {
+        \cs_gset_eq:cc { theH#1 } { doc@real@theH#1 }
+        \cs_undefine:c { doc@real@theH#1 }
+      }
+  }
+%% Switch the section-level parts to the given ones.
+\cs_new_protected:Npn \__doc_num_activate:
+  {
+    \legacy_if:nF { doc@fakenum }
+      {
+        \__doc_num_save:n { equation }
+        \__doc_num_save:n { subsection }
+        \__doc_num_save:n { subsubsection }
+        \clist_map_function:NN \g__doc_num_thmcounters_clist \__doc_num_save:n
+        \cs_gset_eq:NN \doc@real@theequation \theequation
+        \cs_gset:Npn \theequation
+          { \int_use:N \c@doc@fakesection . \arabic { equation } }
+        \tl_gset:Nx \g__doc_num_realsection_tl { \int_use:N \c@section }
+        % \thesubsection, \thesubsubsection, and their link names are built on
+        % \thesection and \theHsection, so these two carry the substitution.
+        \cs_gset_eq:NN \doc@real@thesection \thesection
+        \cs_gset:Npn \thesection { \int_use:N \c@doc@fakesection }
+        \cs_gset_eq:NN \doc@real@theHsection \theHsection
+        \cs_gset:Npn \theHsection
+          { \doc@real@theHsection .setnumbering. \int_use:N \c@doc@fakesection }
+        \__doc_num_fake_theH:n { equation }
+        \clist_map_function:NN \g__doc_num_thmcounters_clist \__doc_num_fake_theH:n
+        \legacy_if_gset_true:n { doc@fakenum }
+      }
+  }
+%% Back to the real numbering.
+\cs_new_protected:Npn \__doc_num_reset:
+  {
+    % Counters that restart with each section keep their values when a real
+    % \section came in between; the others get their saved values back.
+    \bool_if:nTF
+      {
+        \legacy_if_p:n { doc@fakenum }
+        && ! \int_compare_p:nNn { \c@section } = { \g__doc_num_realsection_tl }
+      }
+      {
+        \prop_map_inline:Nn \g__doc_num_saved_prop
+          {
+            \bool_set_false:N \l_tmpa_bool % true: restarts with each section
+            \str_if_eq:nnT {##1} { subsection } { \bool_set_true:N \l_tmpa_bool }
+            \str_if_eq:nnT {##1} { subsubsection } { \bool_set_true:N \l_tmpa_bool }
+            \int_compare:nNnT { \cs_if_exist_use:NF \doc@numwithin { 0 } } > { 0 }
+              {
+                \clist_if_in:NnT \g__doc_num_thmcounters_clist {##1}
+                  { \bool_set_true:N \l_tmpa_bool }
+              }
+            \bool_if:NF \l_tmpa_bool { \setcounter {##1} {##2} }
+          }
+      }
+      { \prop_map_inline:Nn \g__doc_num_saved_prop { \setcounter {##1} {##2} } }
+    \prop_gclear:N \g__doc_num_saved_prop
+    \legacy_if:nT { doc@fakenum }
+      {
+        \cs_gset_eq:NN \theequation \doc@real@theequation
+        \cs_gset_eq:NN \thesection \doc@real@thesection
+        \cs_gset_eq:NN \theHsection \doc@real@theHsection
+        \__doc_num_real_theH:n { equation }
+        \clist_map_function:NN \g__doc_num_thmcounters_clist \__doc_num_real_theH:n
+        \legacy_if_gset_false:n { doc@fakenum }
+      }
+  }
+\cs_new_protected:Npn \__doc_num_reset_boxes:n #1
+  {
+    \int_compare:nNnT { #1 } > { 0 }
+      {
+        \int_compare:nNnF
+          { \cs_if_exist_use:NF \doc@numwithin { 0 } } < { #1 }
+          {
+            \clist_map_inline:Nn \g__doc_num_thmcounters_clist
+              { \setcounter {##1} {0} }
+          }
+      }
+  }
+\cs_new_protected:Npn \__doc_num_set_level:nn #1#2
+  {
+    \str_if_eq:nnTF {#1} { section }
+      { \setcounter { doc@fakesection } {#2} }
+      { \setcounter {#1} {#2} }
+  }
+
+\NewDocumentCommand \setnumbering { O{} }
+  {
+    \group_begin:
+      \tl_clear:N \l__doc_num_section_tl
+      \tl_clear:N \l__doc_num_subsection_tl
+      \tl_clear:N \l__doc_num_subsubsection_tl
+      \bool_set_false:N \l__doc_num_reset_bool
+      \prop_clear:N \l__doc_num_keys_prop
+      \prop_clear:N \l__doc_num_counters_prop
+      \keys_set:nn { document / setnumbering } {#1}
+      \bool_if:NT \l__doc_num_reset_bool { \__doc_num_reset: }
+      % Map the remaining keys to LaTeX counters.
+      \prop_map_inline:Nn \l__doc_num_keys_prop
+        {
+          \clist_if_in:NnTF \g__doc_num_thmenvs_clist {##1}
+            {
+              \tl_set:Nx \l__doc_num_counter_tl { \use:c { tcb@cnt@##1 } }
+              \str_if_eq:VnF \doc@numbering { independent }
+                {
+                  \str_if_eq:nnF {##1} { definition }
+                    { \msg_warning:nnn { document } { setnumbering-shared-counter } {##1} }
+                }
+              \prop_put:NVn \l__doc_num_counters_prop \l__doc_num_counter_tl {##2}
+            }
+            {
+              \cs_if_exist:cTF { c@##1 }
+                { \prop_put:Nnn \l__doc_num_counters_prop {##1} {##2} }
+                { \msg_error:nnn { document } { setnumbering-unknown-key } {##1} }
+            }
+        }
+      % Section levels: a level resets the levels below it, as in LaTeX.
+      \tl_if_empty:NTF \l__doc_num_section_tl
+        {
+          \tl_if_empty:NF \l__doc_num_subsection_tl
+            {
+              \legacy_if:nTF { doc@fakenum }
+                {
+                  \__doc_num_set_level:nn { subsection } { \l__doc_num_subsection_tl }
+                  \tl_if_empty:NTF \l__doc_num_subsubsection_tl
+                    { \__doc_num_set_level:nn { subsubsection } { 0 } }
+                    { \__doc_num_set_level:nn { subsubsection } { \l__doc_num_subsubsection_tl } }
+                  \__doc_num_reset_boxes:n { 2 }
+                }
+                { \msg_error:nnn { document } { setnumbering-no-section } { subsection } }
+            }
+          \tl_if_empty:NF \l__doc_num_subsubsection_tl
+            {
+              \tl_if_empty:NT \l__doc_num_subsection_tl
+                {
+                  \legacy_if:nTF { doc@fakenum }
+                    {
+                      \__doc_num_set_level:nn { subsubsection } { \l__doc_num_subsubsection_tl }
+                      \__doc_num_reset_boxes:n { 3 }
+                    }
+                    { \msg_error:nnn { document } { setnumbering-no-section } { subsubsection } }
+                }
+            }
+        }
+        {
+          \__doc_num_activate:
+          \__doc_num_set_level:nn { section } { \l__doc_num_section_tl }
+          \tl_if_empty:NTF \l__doc_num_subsection_tl
+            { \__doc_num_set_level:nn { subsection } { 0 } }
+            { \__doc_num_set_level:nn { subsection } { \l__doc_num_subsection_tl } }
+          \tl_if_empty:NTF \l__doc_num_subsubsection_tl
+            { \__doc_num_set_level:nn { subsubsection } { 0 } }
+            { \__doc_num_set_level:nn { subsubsection } { \l__doc_num_subsubsection_tl } }
+          \setcounter { equation } { 0 }
+          \__doc_num_reset_boxes:n { 1 }
+        }
+      % Explicit counters: "start at" <value>, stored as LaTeX does.
+      \prop_map_inline:Nn \l__doc_num_counters_prop
+        {
+          \__doc_num_save:n {##1}
+          \setcounter {##1} { \int_eval:n { ##2 - 1 } }
+        }
+    \group_end:
+  }
+
+%% While \setnumbering is in effect, a numbered \section steps the given
+%% section number and restarts the equations (subsections and boxes restart
+%% with the real section counter, as usual).
+\cs_new_protected:Npn \doc@setnumbering@sectionstep #1
+  {
+    \legacy_if:nT { doc@fakenum }
+      {
+        \str_if_eq:nnT {#1} { section }
+          {
+            \stepcounter { doc@fakesection }
+            \setcounter { equation } { 0 }
+          }
+      }
+  }
+\ExplSyntaxOff
+%% Called in \@sect just before a numbered heading steps its counter. As for
+%% the appendix record, whichever of \NR@sect, \H@old@sect, \@sect holds the
+%% class's code is patched (at the top level, because of the #).
+\newif\ifdoc@secstep@patched
+\patchcmd{\NR@sect}{\refstepcounter{#1}}%
+  {\doc@setnumbering@sectionstep{#1}\refstepcounter{#1}}%
+  {\doc@secstep@patchedtrue}{}
+\patchcmd{\H@old@sect}{\refstepcounter{#1}}%
+  {\doc@setnumbering@sectionstep{#1}\refstepcounter{#1}}%
+  {\doc@secstep@patchedtrue}{}
+\patchcmd{\@sect}{\refstepcounter{#1}}%
+  {\doc@setnumbering@sectionstep{#1}\refstepcounter{#1}}%
+  {\doc@secstep@patchedtrue}{}
+\ifdoc@secstep@patched\else
+  \PackageWarning{document}{Could not let \protect\section\space follow
+    \protect\setnumbering}
+\fi
 
 %%=============================================================================
 %% CUSTOM COMMANDS (Optional Enhancement)
