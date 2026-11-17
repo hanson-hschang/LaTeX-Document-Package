@@ -1,4 +1,18 @@
-\newcommand{\eqname}[1]{\textnormal{(#1)}\qquad}
+% Requires: amsmath (for \lvert, \rvert, \lVert, \rVert); loaded below if missing.
+\usepackage{amsmath}
+
+% Requires: mathtools (provides amsmath and the delimiter helpers).
+\usepackage{mathtools}
+
+\newcommand{\autosize}[3]{%
+  \mathchoice
+    {\left#1#3\right#2}   % display style: auto-sized
+    {#1#3#2}              % text style (inline): plain
+    {#1#3#2}              % script style
+    {#1#3#2}%             % scriptscript style
+}
+
+\newcommand{\eqname}[1]{\textnormal{(#1)}}
 \newcommand{\eqnote}[1]{\tag*{(#1)}}
 
 \newcommand{\composition}{\circ}
@@ -9,7 +23,7 @@
 \newcommand{\reals}{\mathbb{R}}
 \newcommand{\integers}{\mathbb{Z}}
 \newcommand{\naturals}{\mathbb{N}}
-\newcommand{\continuous}{C}
+\newcommand{\continuous}{\mathsf{C}}
 \newcommand{\bounded}{b}
 \newcommand{\Space}[1]{\!\left(#1\right)}
 \newcommand{\measurableSpace}[1]{\mathcal{M}\!\left(#1\right)}
@@ -91,8 +105,23 @@
 
 \newcommand{\zeros}{\mathbf{0}}
 \newcommand{\ones}{\mathbf{1}}
-\newcommand{\Set}[1]{\left\{#1\right\}}
-\newcommand{\given}{\,\middle|\,}
+\NewDocumentCommand{\Set}{m e{_^}}{%
+  \mathchoice
+    {\left\{#1\right\}\IfValueT{#2}{_{#2}}\IfValueT{#3}{^{#3}}}
+    {\{#1\}\IfValueT{#2}{_{#2}}\IfValueT{#3}{^{#3}}}
+    {\{#1\}\IfValueT{#2}{_{#2}}\IfValueT{#3}{^{#3}}}
+    {\{#1\}\IfValueT{#2}{_{#2}}\IfValueT{#3}{^{#3}}}%
+}
+% \given: the bar of a conditional, e.g. \Set{x \given x > 0}, \Expectation{X \given Y}.
+% Inside \left...\right (e-TeX group type 16) it grows with the delimiters (\middle);
+% anywhere else (the inline branches of \Set, \abs, \autosize, inside \inline, or plain parentheses) it is a plain bar.
+\newcommand{\given}{%
+  \ifnum\currentgrouptype=16
+    \,\middle|\,%
+  \else
+    \,|\,%
+  \fi
+}
 \newcommand{\at}{|}
 \renewcommand{\exp}[1]{\textnormal{ exp}\left(#1\right)}
 \newcommand{\csch}[1]{\textnormal{ csch}\left(#1\right)}
@@ -100,8 +129,28 @@
 \newcommand{\softmax}[1]{\textnormal{softmax}\left(#1\right)}
 
 \newcommand{\sgn}[1]{\textnormal{sgn}\left(#1\right)}
-\newcommand{\abs}[1]{\left|#1\right|}
-\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+% \newcommand{\abs}[1]{%
+%   \mathchoice
+%     {\left\lvert#1\right\rvert}   % display style: auto-sized
+%     {\lvert#1\rvert}    % text style (inline): plain
+%     {\lvert#1\rvert}    % script style
+%     {\lvert#1\rvert}%   % scriptscript style
+% }
+
+\NewDocumentCommand{\abs}{o m e{^}}{%
+  \mathchoice
+    {\left\lvert#2\right\rvert\IfValueT{#1}{_{#1}}\IfValueT{#3}{^{#3}}}
+    {\lvert#2\rvert\IfValueT{#1}{_{#1}}\IfValueT{#3}{^{#3}}}
+    {\lvert#2\rvert\IfValueT{#1}{_{#1}}\IfValueT{#3}{^{#3}}}
+    {\lvert#2\rvert\IfValueT{#1}{_{#1}}\IfValueT{#3}{^{#3}}}%
+}
+\NewDocumentCommand{\norm}{o m e{^}}{%
+  \mathchoice
+    {\left\lVert#2\right\rVert\IfValueT{#1}{_{#1}}\IfValueT{#3}{^{#3}}}
+    {\lVert#2\rVert\IfValueT{#1}{_{#1}}\IfValueT{#3}{^{#3}}}
+    {\lVert#2\rVert\IfValueT{#1}{_{#1}}\IfValueT{#3}{^{#3}}}
+    {\lVert#2\rVert\IfValueT{#1}{_{#1}}\IfValueT{#3}{^{#3}}}%
+}
 \renewcommand{\det}[1]{\textnormal{det}\left(#1\right)}
 \newcommand{\inverse}{{-1}}
 \newcommand{\pseudoinverse}{+}
@@ -158,32 +207,36 @@
 \newcommand{\union}{\bigcup}
 
 \newcommand{\ProbabilitySimplex}{\Delta}
-\newcommand{\ProbabilitySpace}[1]{\mathcal{P}(#1)}
+\NewDocumentCommand{\ProbabilitySpace}{o m}{%
+  \mathcal{P}\IfValueTF{#1}{_{#1}}{}(#2)%
+}
 \newcommand{\sigmaAlgebra}[1]{\sigma\left(#1\right)}
 \newcommand{\indicator}[1]{\mathbf{1}_{\left\{#1\right\}}}
+% \mathopen{} before \left removes the thin space TeX puts between the letter and \left...\right,
+% and adds nothing when \inline turns \left and \right into \relax (where \! made the letter and the bracket overlap).
 \NewDocumentCommand{\Probability}{o m}{
   \mathsf{P}
   \IfValueT{#1}{_{#1}}
   \IfNoValueT{#1}{}
-  \!\left(#2\right)
+  \mathopen{}\left(#2\right)
 }
 \NewDocumentCommand{\Expectation}{o m}{
   \mathsf{E}
   \IfValueT{#1}{_{#1}}
   \IfNoValueT{#1}{}
-  \!\left(#2\right)
+  \mathopen{}\left[#2\right]
 }
 \NewDocumentCommand{\Variance}{o m}{
   \mathsf{Var}
   \IfValueT{#1}{_{#1}}
   \IfNoValueT{#1}{}
-  \!\left(#2\right)
+  \mathopen{}\left[#2\right]
 }
 \NewDocumentCommand{\Covariance}{o m}{
   \mathsf{Cov}
   \IfValueT{#1}{_{#1}}
   \IfNoValueT{#1}{}
-  \!\left(#2\right)
+  \mathopen{}\left[#2\right]
 }
 \DeclareMathOperator*{\logsumexp}{logsumexp}
 \newcommand{\KLDivergence}[2]{\textnormal{KL}\left(#1 \| #2\right)}
@@ -197,7 +250,14 @@
 
 \newcommand{\subjectto}{\textnormal{s.t.}}
 
-\newcommand{\Order}[1]{O\left(#1\right)}
+% \newcommand{\Order}[1]{%
+%   \mathchoice
+%     {O\left(#1\right)}   % display style: auto-sized
+%     {O(#1)}              % text style (inline)
+%     {O(#1)}              % script style
+%     {O(#1)}%             % scriptscript style
+% }
+\newcommand{\Order}[1]{O\autosize{(}{)}{#1}}
 
 \newcommand{\inline}[1]{%
   \begingroup
